@@ -3,10 +3,20 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
-
-import Link from 'next/link'
+import { signIn, useSession } from "next-auth/react"
+import { useRouter } from 'next/navigation'
 
 export default function Hero() {
+  const { data: session } = useSession()
+  const router = useRouter()
+
+  const handleGetStarted = () => {
+    if (session) {
+      router.push('/form-generation')
+    } else {
+      signIn('google', { callbackUrl: '/form-generation' })
+    }
+  }
 
   return (
     <section className="py-20 px-4 md:px-6 lg:px-8 flex flex-col items-center justify-center min-h-screen text-center">
@@ -31,11 +41,9 @@ export default function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <Link href="/api/auth/signin">
-        <Button size="lg" className="text-lg">
+        <Button size="lg" className="text-lg" onClick={handleGetStarted}>
           Get Started <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
-        </Link>
       </motion.div>
     </section>
   )

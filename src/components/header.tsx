@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { LayoutDashboard } from "lucide-react";
 import { LogOut } from "lucide-react";
+import { ModeToggle } from "./ui/dark-mode-toggle";
 
 
 
@@ -38,8 +39,8 @@ const Header = async () => {
           <div>
             {session?.user ? (
               <div className="flex items-center gap-1 md:gap-1 lg:gap-4">
-                
-                <Link href="/view-forms">
+                <ModeToggle/>
+                <Link href="/forms">
                   <Button variant="outline">
                     <span className="hidden md:inline">Dashboard</span>{" "}
                     <LayoutDashboard className="md:hidden" />
@@ -58,7 +59,7 @@ const Header = async () => {
               </div>
             ) : (
               <div className="flex">
-               
+                <ModeToggle/>
                 <Link href="/api/auth/signin">
                   <Button variant="link" className="text-md">
                     Sign in
