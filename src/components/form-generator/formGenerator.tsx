@@ -13,10 +13,10 @@ import { FormPreview } from "./formviewer"
 const suggestions = [
   { id: 1, title: "Contact Form", defaultPrompt: "Create a contact form with fields for name, email, phone number, and message." },
   { id: 2, title: "Feedback Form", defaultPrompt: "Create a feedback form that collects customer satisfaction ratings and comments." },
-  { id: 3, title: "Job Application Form", defaultPrompt: "Create a job application form for the position of." },
+  { id: 3, title: "Frontend Job Application Form", defaultPrompt: "Create a job application form for the position of frontend." },
   { id: 4, title: "Survey Form", defaultPrompt: "Create a survey form to gather information about." },
   { id: 5, title: "Order Form", defaultPrompt: "Create an order form for customers to purchase." },
-  { id: 6, title: "Registration Form", defaultPrompt: "Create a registration form for." },
+  { id: 6, title: "Registration for Event Form", defaultPrompt: "Create a registration form for attending an event." },
   { id: 7, title: "Lead Generation Form", defaultPrompt: "Create a lead generation form to collect information from potential customers." },
   { id: 8, title: "Payment Form", defaultPrompt: "Create a payment form that collects billing information." },
 ];
