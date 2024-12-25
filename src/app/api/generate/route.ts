@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
   const { userPrompt }: generateFormInput = await req.json();
 
-    console.log(userPrompt, "userPrompt");
+
  
     
   try {
@@ -32,13 +32,13 @@ export async function POST(req: Request) {
     const jsonString = text.replace(/^```json\s*([\s\S]*)\s*```$/g, "$1");
 
     const responseObject = JSON.parse(jsonString);
-    console.log(responseObject, "dsf");
+
 
     
     revalidatePath("/");
     return NextResponse.json(responseObject);
   } catch (err) {
-    console.log(err);
+
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

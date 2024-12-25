@@ -24,9 +24,7 @@ export const generateFormFromAI = async (userPrompt: string): Promise<FormGenera
 export const createGoogleForm = async (formData: FormGeneratorResponse): Promise<Form | null> => {
   const session = (await auth()) as EnrichedSession
   
- 
-// const accessToken = accounts?.$inferSelect({accessToken: true}).findUnique({where: {id: session?.user?.id}})?.accessToken
-//   console.log(session?.sessionToken, "formData");
+
 
 
 
@@ -55,7 +53,7 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
     }
   })
 
-  console.log(form.data, "form");
+
 
   return form.data as Form
 
