@@ -47,7 +47,7 @@ export default function FormGenerator() {
         });
       }
     } catch (error) {
-
+      console.error("Error generating form:", error);
     } finally {
       setIsGenerating(false);
     }
