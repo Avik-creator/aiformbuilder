@@ -1,4 +1,11 @@
 // Main Form Structure
+
+enum RATINGICONTYPE {
+  RATING_ICON_TYPE_UNSPECIFIED="RATING_ICON_TYPE_UNSPECIFIED",
+  STAR="STAR",
+  HEART="HEART",
+  THUMB_UP="THUMB_UP",
+}
 export interface Form {
   formId: string; // Output only
   info: Info; // Required
@@ -124,7 +131,7 @@ export interface RowQuestion {
 // Rating Question
 export interface RatingQuestion {
   scale: number;
-  icon: string;
+  icon: RATINGICONTYPE;
 }
 
 // Question Group Item

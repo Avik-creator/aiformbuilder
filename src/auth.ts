@@ -1,55 +1,8 @@
-// import NextAuth, {type Session, type User} from "next-auth";
-// import GoogleProvider from "next-auth/providers/google";
-// import {DrizzleAdapter} from "@auth/drizzle-adapter";
-// import { db } from "./lib/db";
-
-// declare module "next-auth" {
-//   interface Session {
-//     accessToken?: string;
-//   }
-// }
-
-// export const {
-//     handlers,
-//     auth,
-//     signIn,
-//     signOut,
-//   } = NextAuth({
-//     adapter: DrizzleAdapter(db),
-//     providers: [
-//       GoogleProvider({
-//         clientId: process.env.GOOGLE_CLIENT_ID,
-//         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//         authorization: {
-//           params: {
-//             scope: "https://www.googleapis.com/auth/forms.body openid email profile",
-//           },
-//         },
-//       }),
-//     ],
-
-//     callbacks: {
-//       jwt: ({token, user, account, profile})=> {
-//         console.log({token,user,account,profile})
-//         if (account?.accessToken) {
-//           token.accessToken = account.accessToken;
-//         }
-//         return token;
-//       },
-//       async session({ session, user, token }: { session: Session; user?: User, token: JWTToken }) {
-//         if (user && session?.user) {
-//           session.user.id = user.id;
-//         }
-//         return session;
-//       },
-//     },
-//     }
-//   );
-
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
-import {DrizzleAdapter} from "@auth/drizzle-adapter";
+import { users } from "./lib/schema"
 import { db } from "./lib/db";
+import { eq } from 'drizzle-orm';
 import type { NextAuthConfig, Session } from 'next-auth';
 
 export const config = {
@@ -60,14 +13,12 @@ export const config = {
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID ?? '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-      
       authorization: {
         params: {
           access_type: 'offline',
           prompt: 'consent',
           scope: [
             'https://www.googleapis.com/auth/forms.body openid email profile'
-
           ].join(' '),
           response: 'code',
         },
@@ -81,17 +32,42 @@ export const config = {
     async jwt({ token, user, account }) {
       // Initial sign in
       if (account && user) {
+        console.log('jwt', account)
+        console.log('jwtUser', user)
+        const existingUser = await db.query.users.findFirst({
+          where: eq(users.email, user.email!)
+        });
+
+        if (!existingUser && user.email) {
+          console.log('inserting user', user.email)
+          const result = await db.insert(users).values({
+            email: user.email,
+            name: user.name ?? '',
+            image: user.image ?? '',
+            dbUserId: user.id ?? ''
+          }).returning({ insertedId: users.dbUserId });
+
+          token.userId = result[0].insertedId;
+        } else if (existingUser) {
+          await db.update(users).set({
+            name: user.name ?? existingUser.name,
+            image: user.image ?? existingUser.image,
+            dbUserId: user.id ?? existingUser.dbUserId
+          }).where(eq(users.email, user.email!))
+
+          token.userId = existingUser.dbUserId;
+        }
+
         return {
           ...token,
           access_token: account.access_token,
           issued_at: Date.now(),
-          expires_at: Date.now() + Number(account.expires_in) * 1000, // 3600 seconds
+          expires_at: Date.now() + Number(account.expires_in) * 1000,
           refresh_token: account.refresh_token,
         };
-      } else if (Date.now() < Number(token.expires_at)) {
+      } else if (token.expires_at && Date.now() < Number(token.expires_at)) {
         return token;
       } else {
-
         try {
           const response = await fetch('https://oauth2.googleapis.com/token', {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -99,7 +75,7 @@ export const config = {
               client_id: process.env.OAUTH_CLIENT_ID ?? '',
               client_secret: process.env.GOOGLE_CLIENT_SECRET ?? '',
               grant_type: 'refresh_token',
-              refresh_token: token.refresh_token as string, // Type assertion
+              refresh_token: token.refresh_token as string,
             }),
             method: 'POST',
           });
@@ -109,33 +85,26 @@ export const config = {
           if (!response.ok) throw tokens;
 
           return {
-            ...token, // Keep the previous token properties
+            ...token,
             access_token: tokens.access_token,
             expires_at: Date.now() + Number(tokens.expires_in) * 1000,
-            // Fall back to old refresh token, but note that
-            // many providers may only allow using a refresh token once.
             refresh_token: tokens.refresh_token ?? token.refresh_token,
-          }; // updated inside our session-token cookie
+          };
         } catch (error) {
-
-          // The error property will be used client-side to handle the refresh token error
           return { ...token, error: 'RefreshAccessTokenError' as const };
         }
       }
     },
     async session({ session, token }) {
-
-      // This will be accessible in the client side using useSession hook
-      // So becareful what you return here. Don't return sensitive data.
-      // The auth() function should return jwt response but instead it returns
-      // the session object. This is a bug in next-auth.
-      // Follow this bug https://github.com/nextauthjs/next-auth/issues/9329
+      console.log('session', session)
+      console.log('token', token)
       return {
         ...session,
-        accessToken: String(token.access_token),
-        refreshToken: String(token.refresh_token),
-        accessTokenIssuedAt: Number(token.issued_at),
-        accessTokenExpiresAt: Number(token.expires_at),
+        accessToken: token.access_token as string,
+        refreshToken: token.refresh_token as string,
+        accessTokenIssuedAt: token.issued_at as number,
+        accessTokenExpiresAt: token.expires_at as number,
+        dbUserId: token.userId as string,
       } satisfies EnrichedSession;
     },
   },
@@ -146,6 +115,8 @@ export interface EnrichedSession extends Session {
   refreshToken: string;
   accessTokenExpiresAt: number;
   accessTokenIssuedAt: number;
+  dbUserId?: string
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
+
