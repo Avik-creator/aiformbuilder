@@ -6,19 +6,35 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2, Wand2 } from 'lucide-react'
+import { generateFormFromAI, createGoogleForm, sendBatchUpdateToGoogleForm } from "@/app/actions/actions"
 
 export default function FormGenerator() {
   const [prompt, setPrompt] = useState("")
   const [generatedForm, setGeneratedForm] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
-
+  const [formLinks, setFormLinks] = useState<{ editLink: string; viewLink: string } | null>(null);
+  
   const handleGenerate = async () => {
-    setIsGenerating(true)
-    // Simulating API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    setGeneratedForm("Your AI-generated form will appear here. This is a placeholder for the actual AI-generated content.")
-    setIsGenerating(false)
-  }
+    setIsGenerating(true);
+    try {
+      const aiResponse = await generateFormFromAI(prompt);
+      const createdForm = await createGoogleForm(aiResponse);
+      if(createdForm?.formId){
+        const updatedForm = await sendBatchUpdateToGoogleForm(aiResponse, createdForm.formId);
+        console.log('updatedForm:', updatedForm);
+        setFormLinks({
+          editLink: `https://docs.google.com/forms/d/${createdForm.formId}/edit`,
+          viewLink: (updatedForm as any).form.responderUri || `https://docs.google.com/forms/d/e/${createdForm.formId}/viewform`,
+        });
+      }
+    } catch (error) {
+      console.error('Error generating form:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+    
+  
 
   return (
     <motion.div
@@ -85,4 +101,5 @@ export default function FormGenerator() {
     </motion.div>
   )
 }
+
 

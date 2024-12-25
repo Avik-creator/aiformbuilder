@@ -285,3 +285,8 @@ export type Feedback = {
   text?: string;
   links?: { uri: string; description: string }[];
 };
+
+export interface FormGeneratorResponse {
+  initialForm: Form;
+  batchUpdate: BatchUpdateFormRequest;
+}

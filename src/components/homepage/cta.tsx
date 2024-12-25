@@ -9,7 +9,7 @@ export default function CTA() {
   const { data: session } = useSession()
   const router = useRouter()
 
-  console.log("SESSIOn", session)
+
 
   const handleStartBuilding = () => {
     if (session) {

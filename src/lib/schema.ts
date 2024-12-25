@@ -6,14 +6,11 @@ import {
     primaryKey,
     integer,
   } from "drizzle-orm/pg-core"
-  import postgres from "postgres"
-  import { drizzle } from "drizzle-orm/postgres-js"
+
   import type { AdapterAccountType } from "next-auth/adapters"
    
-  const connectionString = process.env.DATABASE_URL || "postgres://admin:admin@localhost:5432/formbuilder"
-  const pool = postgres(connectionString, { max: 1 })
-   
-  export const db = drizzle(pool)
+
+
    
   export const users = pgTable("user", {
     id: text("id")
