@@ -11,7 +11,7 @@ import { FormGenerationError } from "@/lib/error";
 
 export const generateFormFromAI = async (userPrompt: string): Promise<FormGeneratorResponse> => {
   try {
-    const response = await fetch('http://localhost:3000/api/generate', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
