@@ -216,8 +216,8 @@ export interface RowQuestion {
 }
 
 export interface ScaleQuestion {
-  low: number;
-  high: number;
+  low: number; minimum: 2
+  high: number maximum: 10;
   lowLabel?: string;
   highLabel?: string;
 }
