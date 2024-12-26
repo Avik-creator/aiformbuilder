@@ -34,7 +34,6 @@ export async function POST(req: Request) {
 
     const responseObject = JSON.parse(jsonString, null, 2);
 
-    console.log(responseObject, "KDFSKDJKJHDF");
 
 
     

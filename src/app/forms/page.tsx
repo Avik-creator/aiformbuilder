@@ -4,7 +4,7 @@ import { FormCard } from "./Formcard"
 export default async function FormsPage() {
   const forms = await getForms()
 
-  console.log(forms)
+
 
   return (
     <div className="container mx-auto py-10">

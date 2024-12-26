@@ -19,7 +19,6 @@ export const generateFormFromAI = async (userPrompt: string): Promise<FormGenera
       body: JSON.stringify({ userPrompt }),
     })
 
-    console.log(response)
 
 
     if (!response.ok) {
@@ -103,7 +102,7 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
       );
     }
 
-    console.log("FORMDATA", form.data)
+
 
     return {
       Form: form.data as Form,
@@ -124,7 +123,7 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
 export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorResponse, formId: string, createdForm: any): Promise<any> => {
   const session = (await auth()) as EnrichedSession
 
-  console.log(JSON.stringify(formData), "SKDFJSDHFJ")
+
   if (!session?.dbUserId) {
     throw new FormGenerationError(
       'AUTH_ERROR',

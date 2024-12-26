@@ -19,7 +19,7 @@ export async function getForms() {
     }
   })
 
-  console.log(user)
+
 
   return user?.forms || []
 }

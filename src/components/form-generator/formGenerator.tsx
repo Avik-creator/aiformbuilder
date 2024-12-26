@@ -72,7 +72,7 @@ export default function FormGenerator() {
       });
 
     } catch (error) {
-      console.error("Error generating form:", error);
+
       
       let errorMessage = 'An unexpected error occurred';
       let errorDescription = 'Please try again later';
