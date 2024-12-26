@@ -11,7 +11,7 @@ import { FormPreview } from "./formviewer"
 import { useToast } from "@/hooks/use-toast"
 import { getErrorMessage } from "@/lib/utils"
 import { FormGenerationError } from "@/lib/error"
-import { validateFormResponse } from "@/lib/response"
+
 
 // Suggestions array for form templates
 const suggestions = [
@@ -41,14 +41,7 @@ export default function FormGenerator() {
     setIsGenerating(true);
     try {
       const aiResponse = await generateFormFromAI(prompt);
-      const isValid = validateFormResponse(aiResponse);
-
-      if (!isValid) {
-        throw new FormGenerationError(
-          'INVALID_RESPONSE',
-          'Invalid response received from AI'
-        );
-      }
+      
 
       const createdForm = await createGoogleForm(aiResponse);
       

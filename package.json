@@ -21,6 +21,7 @@
     "framer-motion": "^11.15.0",
     "google-auth-library": "^9.15.0",
     "googleapis": "^144.0.0",
+    "groq-sdk": "^0.9.1",
     "lucide-react": "^0.469.0",
     "net": "^1.0.2",
     "next": "15.1.2",

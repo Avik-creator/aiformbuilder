@@ -19,11 +19,15 @@ export const generateFormFromAI = async (userPrompt: string): Promise<FormGenera
       body: JSON.stringify({ userPrompt }),
     })
 
+    console.log(response)
+
+
     if (!response.ok) {
       throw new FormGenerationError(
         'AI_GENERATION_FAILED',
         'Failed to generate form content',
         `Status: ${response.status}`
+        
       );
     }
 
