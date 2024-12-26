@@ -120,7 +120,7 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
   }
 }
 
-export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorResponse, formId: string, createdForm: any): Promise<any> => {
+export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorResponse, formId: string, createdForm: createGoogleFormResponse): Promise<any> => {
   const session = (await auth()) as EnrichedSession
 
 
@@ -180,7 +180,9 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
       );
     }
 
-    const editLink = `https://docs.google.com/forms/d/${formId}/edit`
+    const formEditLink = `https://docs.google.com/forms/d/${createdForm?.Form?.formId}/edit`
+
+
 
     const newForm = await db.transaction(async (tx) => {
       const [insertedForm] = await tx.insert(forms).values({
@@ -188,7 +190,7 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
         formId: formId,
         description: formData.initialForm.info.description || '',
         formLink: createdForm?.Form?.responderUri,
-        editLink: editLink,
+        editFormLink: formEditLink,
         userId: user.id
       } as FormsInsert).returning();
 
@@ -201,6 +203,8 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
         'Failed to save form to database'
       );
     }
+
+    console.log(JSON.stringify(response.data, null, 2))
 
     return response.data;
   } catch (error) {
