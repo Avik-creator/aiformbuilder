@@ -1,5 +1,5 @@
 export const getPrompt = (userPrompt: string) => {
-  return `You are a Google Forms generator. Convert the following text into a Google Form structure following these rules:
+  return `You are a Google Forms generator. Check everything before returning the response. Convert the following text into a Google Form structure following these rules:
   
   ### Input Analysis
   Analyze the **USER_PROMPT** (user provided text) to identify:
@@ -297,6 +297,13 @@ export type WriteControl =
     "batchUpdate": {
       "requests": [
         {
+        "updateFormInfo: {
+          "info":{
+            "description": "Please fill out this form to register for the event",
+            "documentTitle": "Event Registration Form",
+          },
+          "updateMask": "description,documentTitle"
+        },
           "createItem": {
             "item": {
               "title": "What is your name?",
@@ -329,6 +336,9 @@ export type WriteControl =
   5. ✓ No extra fields are added to any interface
   6. ✓ Option objects follow the strict schema
   7. ✓ No option.value or option.image when isOther is true
+  8. ✓ Don't include file Upload Type Questions in the form
+  9. ✓ Check for any missing or incorrect fields
+  10. ✓ Ensure that all the required fields are there.
   
   USER_PROMPT: ${userPrompt}
   `;

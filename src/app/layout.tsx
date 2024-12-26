@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Form Generator",
-  description: "It's a form generator that uses AI to generate google forms.",
+  title: "FormCraft AI",
+  description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
   verification: {
     google: process.env.GOOGLE_VERIFICATION_ID
   }

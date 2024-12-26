@@ -34,7 +34,7 @@ const Header = async () => {
       <nav className="border-gray-200 px-4 py-3">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <Link href="/">
-            <h1 className="md:text-2xl lg:text-2xl">AI Form Builder</h1>
+            <h1 className="md:text-2xl lg:text-2xl">FormCraft AI</h1>
           </Link>
           <div>
             {session?.user ? (

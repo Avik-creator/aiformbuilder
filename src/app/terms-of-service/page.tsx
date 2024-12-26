@@ -17,7 +17,7 @@ const TermsOfService = () => {
               <section className="space-y-4">
                 <h2 className="text-2xl font-semibold">1. Agreement to Terms</h2>
                 <p>
-                  By accessing or using AI Form Builder, you agree to be bound by these Terms. 
+                  By accessing or using FormCraft AI, you agree to be bound by these Terms. 
                   If you disagree with any part of the terms, you may not access the service.
                 </p>
               </section>
@@ -25,7 +25,7 @@ const TermsOfService = () => {
               <section className="space-y-4">
                 <h2 className="text-2xl font-semibold">2. Description of Service</h2>
                 <p>
-                  AI Form Builder provides form creation and management services, including:
+                  FormCraft AI provides form creation and management services, including:
                 </p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Form creation and customization</li>

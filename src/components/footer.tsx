@@ -21,7 +21,7 @@ const Footer = () => {
           </Link>
         </div>
         <div className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} AI Form Builder. All rights reserved.
+          © {new Date().getFullYear()} FormCraft AI. All rights reserved.
         </div>
       </div>
     </footer>

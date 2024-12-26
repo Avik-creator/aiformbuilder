@@ -15,7 +15,7 @@ const PrivacyPolicy = () => {
             <section className="space-y-6">
               <h2 className="text-3xl font-semibold">1. Introduction</h2>
               <p className="text-lg">
-                Welcome to AI Form Builder ("we," "our," or "us"). We are committed to protecting 
+                Welcome to FormCraft AI ("we," "our," or "us"). We are committed to protecting 
                 your privacy and ensuring the security of your personal information. This Privacy 
                 Policy explains how we collect, use, store, and protect your data when you use our 
                 form-building service.
