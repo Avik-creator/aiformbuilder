@@ -103,6 +103,8 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
       );
     }
 
+    console.log("FORMDATA", form.data)
+
     return {
       Form: form.data as Form,
       message: "Google Form created successfully",
@@ -119,9 +121,10 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
   }
 }
 
-export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorResponse, formId: string): Promise<any> => {
+export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorResponse, formId: string, createdForm: any): Promise<any> => {
   const session = (await auth()) as EnrichedSession
 
+  console.log(JSON.stringify(formData), "SKDFJSDHFJ")
   if (!session?.dbUserId) {
     throw new FormGenerationError(
       'AUTH_ERROR',
@@ -159,21 +162,15 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
       );
     }
 
+    
+
     const googleForms = google.forms({version: "v1", auth: oauth2Client})
     const response = await googleForms.forms.batchUpdate({
-      auth: oauth2Client,
       formId: formId,
+      auth: oauth2Client,
       requestBody: {
-        includeFormInResponse: true,
-        requests: [{
-          updateFormInfo:{
-            info:{
-              description: formData.initialForm.info.description,
-              documentTitle: formData.initialForm.info.documentTitle,
-            }
-          },
-          ...formData.batchUpdate.requests
-        }],
+        requests: formData?.batchUpdate?.requests as any[],
+        includeFormInResponse: true
       }
     })
 
@@ -189,9 +186,9 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
     const newForm = await db.transaction(async (tx) => {
       const [insertedForm] = await tx.insert(forms).values({
         title: formData.initialForm.info.title as string,
-        formId: formData.initialForm?.formId,
+        formId: formId,
         description: formData.initialForm.info.description || '',
-        formLink: formData?.initialForm.responderUri,
+        formLink: createdForm?.Form?.responderUri,
         editLink: editLink,
         userId: user.id
       } as FormsInsert).returning();

@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getPrompt } from "@/lib/prompt";
+
 const API_KEY = process.env.GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
@@ -31,7 +32,9 @@ export async function POST(req: Request) {
 
     const jsonString = text.replace(/^```json\s*([\s\S]*)\s*```$/g, "$1");
 
-    const responseObject = JSON.parse(jsonString);
+    const responseObject = JSON.parse(jsonString, null, 2);
+
+    console.log(responseObject, "KDFSKDJKJHDF");
 
 
     

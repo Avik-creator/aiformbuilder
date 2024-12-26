@@ -134,18 +134,11 @@ export interface DateQuestion {
   includeYear: boolean;
 }
 
-export interface FileUploadQuestion {
-  folderId: string;
-  types: FileType[];
-  maxFiles: number;
-  maxFileSize: number;
-}
 
 // Enum for File Types
 export enum FileType {
   FILE_TYPE_UNSPECIFIED = "FILE_TYPE_UNSPECIFIED", // Default value, unused
   ANY = "ANY", // No restrictions on file type
-  DOCUMENT = "DOCUMENT", // Google Docs document
   PRESENTATION = "PRESENTATION", // Google Slides presentation
   SPREADSHEET = "SPREADSHEET", // Google Sheets spreadsheet
   DRAWING = "DRAWING", // Google drawing
@@ -203,7 +196,7 @@ export interface Question {
   grading?: Grading;
 
   // Union field kind: One of the following question types
-  kind: ChoiceQuestion | TextQuestion | ScaleQuestion | DateQuestion | TimeQuestion | FileUploadQuestion | RowQuestion | RatingQuestion;
+  kind: ChoiceQuestion | TextQuestion | ScaleQuestion | DateQuestion | TimeQuestion | RowQuestion | RatingQuestion;
 }
 
 export interface RatingQuestion {
@@ -297,7 +290,8 @@ export type WriteControl =
     "initialForm": {
       "info": {
         "title": "Event Registration",
-        "description": "Please fill out this form to register for the event"
+        "description": "Please fill out this form to register for the event",
+        "documentTitle": "Event Registration Form",
       }
     },
     "batchUpdate": {

@@ -52,7 +52,7 @@ export default function FormGenerator() {
         );
       }
 
-      const updatedForm = await sendBatchUpdateToGoogleForm(aiResponse, createdForm.Form.formId);
+      const updatedForm = await sendBatchUpdateToGoogleForm(aiResponse, createdForm.Form.formId, createdForm);
 
       if (!updatedForm?.form?.responderUri) {
         throw new FormGenerationError(
