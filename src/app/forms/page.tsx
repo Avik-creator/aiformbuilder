@@ -1,8 +1,18 @@
+import { auth } from "@/auth"
 import { getForms } from "../actions/getForms"
 import { FormCard } from "./Formcard"
+import { redirect } from "next/navigation"
 
 export default async function FormsPage() {
-  const forms = await getForms()
+  
+
+  const session = await auth();
+
+  if(!session) {
+    redirect("/");
+  }
+
+  const forms = await getForms();
 
 
 
