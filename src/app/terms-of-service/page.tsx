@@ -92,7 +92,7 @@ const TermsOfService = () => {
                 <p>
                   For questions about these Terms, please contact us at:
                   <br />
-                  <span className="text-primary">[Insert Contact Information]</span>
+                  <span className="text-primary">avikm744@gmail.com</span>
                 </p>
               </section>
             </div>
