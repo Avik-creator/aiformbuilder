@@ -16,6 +16,10 @@ export interface Form {
   linkedSheetId?: string; // Output only
 }
 
+export interface createGoogleFormResponse{
+  Form: Form | null;
+  message?: string;
+}
 // Info Object
 export interface Info {
   title: string; // Required
@@ -130,8 +134,8 @@ export interface RowQuestion {
 
 // Rating Question
 export interface RatingQuestion {
-  scale: number;
-  icon: RATINGICONTYPE;
+  ratingScaleLevel:number;
+  iconType: "RATING_ICON_TYPE_UNSPECIFIED" | "STAR" | "HEART" | "THUMB_UP";
 }
 
 // Question Group Item

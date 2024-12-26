@@ -1,126 +1,216 @@
 'use server'
 
 import { auth, EnrichedSession } from "@/auth"
-import { Form, FormGeneratorResponse } from "@/lib/types"
-import { users,forms, FormsInsert } from "@/lib/schema";
+import { createGoogleFormResponse, Form, FormGeneratorResponse } from "@/lib/types"
+import { users, forms, FormsInsert } from "@/lib/schema";
 import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
-
+import { FormGenerationError } from "@/lib/error";
 
 export const generateFormFromAI = async (userPrompt: string): Promise<FormGeneratorResponse> => {
-  const response = await fetch('http://localhost:3000/api/generate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ userPrompt }),
-  })
+  try {
+    const response = await fetch('http://localhost:3000/api/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userPrompt }),
+    })
 
-  const data = await response.json()
-  return data
+    if (!response.ok) {
+      throw new FormGenerationError(
+        'AI_GENERATION_FAILED',
+        'Failed to generate form content',
+        `Status: ${response.status}`
+      );
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    if (error instanceof FormGenerationError) {
+      throw error;
+    }
+    throw new FormGenerationError(
+      'AI_GENERATION_ERROR',
+      'An error occurred while generating the form',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
+  }
 }
 
-export const createGoogleForm = async (formData: FormGeneratorResponse): Promise<Form | null> => {
+export const createGoogleForm = async (formData: FormGeneratorResponse): Promise<createGoogleFormResponse> => {
   const session = (await auth()) as EnrichedSession
 
-  console.log('session', session?.dbUserId)
-  console.log('session', users?.dbUserId)
-  
-  const userId = await db.query.users.findFirst({
-    where: eq(users.dbUserId, session.dbUserId as string)
-  })
+  if (!session?.dbUserId) {
+    throw new FormGenerationError(
+      'AUTH_ERROR',
+      'You must be logged in to create forms',
+    );
+  }
 
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.dbUserId, session.dbUserId as string));
 
+  if (!user) {
+    throw new FormGenerationError(
+      'USER_NOT_FOUND',
+      'User not found in database'
+    );
+  }
 
-
+  if (user.dbUserId !== session.dbUserId) {
+    throw new FormGenerationError(
+      'USER_MISMATCH',
+      'User authentication mismatch'
+    );
+  }
 
   const oauth2Client = new OAuth2Client({
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   })
 
-  oauth2Client.setCredentials({
-    access_token: session?.accessToken,
-    refresh_token: session?.refreshToken,
-  })
+  try {
+    oauth2Client.setCredentials({
+      access_token: session.accessToken,
+      refresh_token: session.refreshToken,
+    })
 
-  console.log("Session DBUserId", session?.dbUserId)
-
-  if (!session?.dbUserId) return null;
-  
-
-  const googleForms = google.forms({version: "v1", auth: oauth2Client})
-  const form = await googleForms.forms.create({
-    auth: oauth2Client,
-    requestBody: {
-      info: {
-        title: formData?.initialForm?.info?.title,
-        description: formData?.initialForm?.info?.description,
+    const googleForms = google.forms({version: "v1", auth: oauth2Client})
+    
+    const form = await googleForms.forms.create({
+      auth: oauth2Client,
+      requestBody: {
+        info:{
+          title: formData.initialForm.info.title,
+        }
       }
+    })
+
+    if(!form.data || !form.data.formId) {
+      throw new FormGenerationError(
+        'GOOGLE_FORM_CREATE_FAILED',
+        'Failed to create Google Form'
+      );
     }
-  })
 
-  await db.insert(forms).values({
-    title: formData?.initialForm?.info.title as string,
-    formId: form.data?.formId || '',
-    description: formData?.initialForm?.info.description,
-    formLink: form.data?.responderUri || '',
-    userId: Number(session.dbUserId)
-  } as FormsInsert)
-
-
-  
-
-  if(!form.data) {
-    return null
+    return {
+      Form: form.data as Form,
+      message: "Google Form created successfully",
+    }
+  } catch (error) {
+    if (error instanceof FormGenerationError) {
+      throw error;
+    }
+    throw new FormGenerationError(
+      'GOOGLE_API_ERROR',
+      'Error creating Google Form',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
   }
-
-
-  return form.data as Form
-
 }
 
 export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorResponse, formId: string): Promise<any> => {
   const session = (await auth()) as EnrichedSession
 
-  
-
-  const oauth2Client = new OAuth2Client({
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  })
-
-  oauth2Client.setCredentials({
-    access_token: session?.accessToken,
-    refresh_token: session?.refreshToken,
-  })
-
-
-  
-  const googleForms = google.forms({version: "v1", auth: oauth2Client})
-  const response = await googleForms.forms.batchUpdate({
-    auth: oauth2Client,
-    formId: formId,
-    requestBody: {
-      includeFormInResponse: true,
-      requests: formData.batchUpdate.requests,
-    }
-  })
-
-  if(!response.data) {
-    return null
+  if (!session?.dbUserId) {
+    throw new FormGenerationError(
+      'AUTH_ERROR',
+      'You must be logged in to update forms'
+    );
   }
 
-  
+  try {
+    const oauth2Client = new OAuth2Client({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    })
 
-  const editLink = `https://docs.google.com/forms/d/${formId}/edit`
+    oauth2Client.setCredentials({
+      access_token: session?.accessToken,
+      refresh_token: session?.refreshToken,
+    })
 
-  await db.update(forms).set({
-    editFormLink: editLink || '',
-  }).where(eq(users?.id, Number(session.dbUserId)))
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.dbUserId, session.dbUserId as string));
 
+    if (!user) {
+      throw new FormGenerationError(
+        'USER_NOT_FOUND',
+        'User not found in database'
+      );
+    }
 
-  return response.data
+    if (user.dbUserId !== session.dbUserId) {
+      throw new FormGenerationError(
+        'USER_MISMATCH',
+        'User authentication mismatch'
+      );
+    }
+
+    const googleForms = google.forms({version: "v1", auth: oauth2Client})
+    const response = await googleForms.forms.batchUpdate({
+      auth: oauth2Client,
+      formId: formId,
+      requestBody: {
+        includeFormInResponse: true,
+        requests: [{
+          updateFormInfo:{
+            info:{
+              description: formData.initialForm.info.description,
+              documentTitle: formData.initialForm.info.documentTitle,
+            }
+          },
+          ...formData.batchUpdate.requests
+        }],
+      }
+    })
+
+    if(!response.data) {
+      throw new FormGenerationError(
+        'BATCH_UPDATE_FAILED',
+        'Failed to update form with questions'
+      );
+    }
+
+    const editLink = `https://docs.google.com/forms/d/${formId}/edit`
+
+    const newForm = await db.transaction(async (tx) => {
+      const [insertedForm] = await tx.insert(forms).values({
+        title: formData.initialForm.info.title as string,
+        formId: formData.initialForm?.formId,
+        description: formData.initialForm.info.description || '',
+        formLink: formData?.initialForm.responderUri,
+        editLink: editLink,
+        userId: user.id
+      } as FormsInsert).returning();
+
+      return insertedForm;
+    });
+
+    if(!newForm) {
+      throw new FormGenerationError(
+        'DB_ERROR',
+        'Failed to save form to database'
+      );
+    }
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof FormGenerationError) {
+      throw error;
+    }
+    throw new FormGenerationError(
+      'BATCH_UPDATE_ERROR',
+      'Error updating form',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
+  }
 }

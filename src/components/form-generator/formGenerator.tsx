@@ -8,6 +8,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Loader2, Wand2 } from 'lucide-react'
 import { generateFormFromAI, createGoogleForm, sendBatchUpdateToGoogleForm } from "@/app/actions/actions"
 import { FormPreview } from "./formviewer"
+import { useToast } from "@/hooks/use-toast"
+import { getErrorMessage } from "@/lib/utils"
+import { FormGenerationError } from "@/lib/error"
 
 // Suggestions array for form templates
 const suggestions = [
@@ -25,6 +28,7 @@ export default function FormGenerator() {
   const [prompt, setPrompt] = useState(""); // User's prompt input
   const [isGenerating, setIsGenerating] = useState(false); // Loading state
   const [formLinks, setFormLinks] = useState<{ editLink: string; viewLink: string } | null>(null); // Links to generated forms
+  const { toast } = useToast()
 
   // Handle suggestion click
   const handleSuggestionClick = (suggestion: { id?: number; title?: string; defaultPrompt: string }) => {
@@ -38,21 +42,52 @@ export default function FormGenerator() {
       const aiResponse = await generateFormFromAI(prompt);
       const createdForm = await createGoogleForm(aiResponse);
       
-      if (createdForm?.formId) {
-        const updatedForm = await sendBatchUpdateToGoogleForm(aiResponse, createdForm.formId);
-
-        setFormLinks({
-          editLink: `https://docs.google.com/forms/d/${createdForm.formId}/edit`,
-          viewLink: updatedForm?.form?.responderUri || `https://docs.google.com/forms/d/e/${createdForm.formId}/viewform`,
-        });
+      if (!createdForm?.Form?.formId) {
+        throw new FormGenerationError(
+          'FORM_CREATE_FAILED',
+          'Failed to create form'
+        );
       }
+
+      const updatedForm = await sendBatchUpdateToGoogleForm(aiResponse, createdForm.Form.formId);
+
+      if (!updatedForm?.form?.responderUri) {
+        throw new FormGenerationError(
+          'FORM_UPDATE_FAILED',
+          'Failed to update form'
+        );
+      }
+
+      setFormLinks({
+        editLink: `https://docs.google.com/forms/d/${createdForm.Form.formId}/edit`,
+        viewLink: updatedForm.form.responderUri,
+      });
+
+      toast({
+        title: "Success!",
+        description: "Your form has been created successfully.",
+      });
+
     } catch (error) {
       console.error("Error generating form:", error);
+      
+      let errorMessage = 'An unexpected error occurred';
+      let errorDescription = 'Please try again later';
+      
+      if (error instanceof FormGenerationError) {
+        errorMessage = getErrorMessage(error);
+        errorDescription = error.details || 'Please try again or contact support if the issue persists';
+      }
+
+      toast({
+        title: errorMessage,
+        description: errorDescription,
+        variant: "destructive",
+      });
     } finally {
       setIsGenerating(false);
     }
   };
-
   return (
     <>
       {/* Display form preview if links are available */}

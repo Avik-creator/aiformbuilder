@@ -37,7 +37,6 @@ export const config = {
         });
 
         if (!existingUser && user.email) {
-          console.log('inserting user', user.email)
           const result = await db.insert(users).values({
             email: user.email,
             name: user.name ?? '',
@@ -53,7 +52,7 @@ export const config = {
             dbUserId: user.id ?? existingUser.dbUserId
           }).where(eq(users.email, user.email!))
 
-          token.userId = existingUser.dbUserId;
+          token.userId = user.id ?? existingUser.dbUserId;
         }
 
         return {

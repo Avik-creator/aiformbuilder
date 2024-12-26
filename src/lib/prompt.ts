@@ -2,7 +2,7 @@ export const getPrompt = (userPrompt: string) => {
   return `You are a Google Forms generator. Convert the following text into a Google Form structure following these rules:
   
   ### Input Analysis
-  Analyze the **USER_PROMPT**(user provided text) to identify:
+  Analyze the **USER_PROMPT** (user provided text) to identify:
   1. Identify the **form title** and **description**
   2. Extract **required questions**
   3. Determine the most appropriate **question types** for each piece of information
@@ -63,306 +63,90 @@ export const getPrompt = (userPrompt: string) => {
 
   ### Available Types and Interfaces
   
-// Main Form Structure
-// Main Form Structure
-
-enum RATINGICONTYPE {
-  RATING_ICON_TYPE_UNSPECIFIED="RATING_ICON_TYPE_UNSPECIFIED",
-  STAR="STAR",
-  HEART="HEART",
-  THUMB_UP="THUMB_UP",
-}
-export interface Form {
-  formId: string; // Output only
-  info: Info; // Required
-  settings?: FormSettings;
-  items: Item[]; // Required
-  revisionId: string; // Output only
-  responderUri: string; // Output only
-  linkedSheetId?: string; // Output only
+interface Question {
+    questionId: string;
+    required: boolean;
+    kind: ChoiceQuestion | TextQuestion | ScaleQuestion | DateQuestion | TimeQuestion | RatingQuestion;
 }
 
-// Info Object
-export interface Info {
-  title: string; // Required
-  documentTitle?: string; // Output only
-  description?: string;
+export enum ChoiceType {
+  CHOICE_TYPE_UNSPECIFIED = "CHOICE_TYPE_UNSPECIFIED", // Default value, not used
+  RADIO = "RADIO", // Radio buttons: User can only pick one option
+  CHECKBOX = "CHECKBOX", // Checkboxes: User can pick any number of options
+  DROP_DOWN = "DROP_DOWN", // Drop-down menu: User can select one option from a dropdown
 }
 
-// Form Settings
-export interface FormSettings {
-  quizSettings?: QuizSettings;
+export enum GoToAction {
+  GO_TO_ACTION_UNSPECIFIED = "GO_TO_ACTION_UNSPECIFIED", // Default value, not used
+  NEXT_SECTION = "NEXT_SECTION",
+  RESTART_FORM = "RESTART_FORM",
+  SUBMIT_FORM = "SUBMIT_FORM",
 }
 
-// Quiz Settings
-export interface QuizSettings {
-  isQuiz: boolean;
-}
-
-// Form Items
-export interface Item {
-  itemId?: string;
-  title: string;
-  description?: string;
-  kind:
-    | QuestionItem
-    | QuestionGroupItem
-    | PageBreakItem
-    | TextItem
-    | ImageItem
-    | VideoItem;
-}
-
-// Question Item
-export interface QuestionItem {
-  question: Question;
-  image?: Image;
-}
-
-// Question
-export interface Question {
-  questionId?: string; // Read only
-  required?: boolean;
-  grading?: Grading;
-  kind:
-    | ChoiceQuestion
-    | TextQuestion
-    | ScaleQuestion
-    | DateQuestion
-    | TimeQuestion
-    | FileUploadQuestion
-    | RowQuestion
-    | RatingQuestion;
-}
-
-// Grading
-export interface Grading {
-  points: number;
-  correctAnswers?: string[];
-}
-
-// Choice Question
-export interface ChoiceQuestion {
-  type: ChoiceType;
-  options: Option[];
-  shuffle?: boolean;
-}
-
-// ChoiceType Enum
-export type ChoiceType = "RADIO" | "CHECKBOX" | "DROP_DOWN";
-
-// Option
+// Option interface for the choices in a question
 export interface Option {
-  value: string; // Required
-  image?: Image;
-  isOther?: boolean;
-  goToSection?: GoToAction | string; // Section navigation or section ID
+  value: string; // value of the option. Use 
+  image?: Image; // Optional image associated with the option
+  isOther: boolean; 
+  goToAction?: GoToAction; // Action to go to a specific section (optional)
+  goToSectionId?: string; // Section ID to go to (optional)
+}
+// - Cannot set option.value or option.image when option.isOther is true
+
+// Multiple Choice/Checkbox/Dropdown
+interface ChoiceQuestion {
+    type: "RADIO" | "CHECKBOX" | "DROP_DOWN"; // Type of the choice question
+    options: Option[];
+    shuffle: boolean;
 }
 
-// GoToAction Enum
-export type GoToAction = "NEXT_SECTION" | "RESTART_FORM" | "SUBMIT_FORM";
+ChoiceQuestion:
+- The type field must be one of the following valid values:
+  - "RADIO"
+  - "CHECKBOX"
+  - "DROP_DOWN"
+- Do not use any other values for this field.
+- options is a required field in case of DROP_DOWN and must be an array of Option objects as per schema
 
-// Text Question
-export interface TextQuestion {
-  paragraph: boolean;
+
+// Text Input
+interface TextQuestion {
+    paragraph: boolean;  // true for long answer, false for short
 }
 
-// Scale Question
-export interface ScaleQuestion {
-  low: number;
-  high: number;
+
+// Rating Scale
+interface ScaleQuestion {
+    low: integer;
+    high: integer;
+    lowLabel?: string;
+    highLabel?: string;
 }
 
-// Date Question
-export interface DateQuestion {
-  includeTime: boolean;
+// Date Input
+interface DateQuestion {
+    includeTime: boolean;
+    includeYear: boolean;
 }
 
-// Time Question
-export interface TimeQuestion {
-  includeDuration: boolean;
+// Time Input
+interface TimeQuestion {
+    duration: boolean;
 }
 
-// File Upload Question
-export interface FileUploadQuestion {
-  maxFileSize: number; // Max size in bytes
-  fileTypes: string[]; // Allowed file types
+// Star/Heart Rating
+interface RatingQuestion {
+  ratingScaleLevel: number;
+  iconType: RatingIconType;
 }
 
-// Row Question
-export interface RowQuestion {
-  rows: string[];
+enum RatingIconType {
+  STAR = "STAR",
+  HEART = "HEART",
+  THUMB_UP = "THUMB_UP",
+  RATING_ICON_TYPE_UNSPECIFIED = "RATING_ICON_TYPE_UNSPECIFIED",
 }
 
-// Rating Question
-export interface RatingQuestion {
-  scale: number;
-  icon: RATINGICONTYPE;
-}
-
-// Question Group Item
-export interface QuestionGroupItem {
-  questions: Question[];
-}
-
-// Page Break Item
-export interface PageBreakItem {
-  title: string;
-  description?: string;
-}
-
-// Text Item
-export interface TextItem {
-  text: string;
-}
-
-// Image Item
-export interface ImageItem {
-  image: Image;
-}
-
-// Video Item
-export interface VideoItem {
-  videoUri: string;
-  altText?: string;
-  properties?: MediaProperties;
-}
-
-// Image
-export interface Image {
-  contentUri?: string; // Output only
-  altText?: string;
-  properties?: MediaProperties;
-  sourceUri?: string; // Input only
-}
-
-// Media Properties
-export interface MediaProperties {
-  alignment: Alignment;
-  width?: number; // Between 0 and 740
-}
-
-// Alignment Enum
-export type Alignment = "LEFT" | "RIGHT" | "CENTER";
-
-
-export type BatchUpdateFormRequest = {
-  includeFormInResponse?: boolean;
-  requests: Request[];
-  writeControl?: WriteControl;
-};
-
-export type BatchUpdateFormResponse = {
-  form?: Form;
-  replies: Response[];
-  writeControl?: WriteControl;
-};
-
-export type Request =
-  | { updateFormInfo: UpdateFormInfoRequest }
-  | { updateSettings: UpdateSettingsRequest }
-  | { createItem: CreateItemRequest }
-  | { moveItem: MoveItemRequest }
-  | { deleteItem: DeleteItemRequest }
-  | { updateItem: UpdateItemRequest };
-
-export type UpdateFormInfoRequest = {
-  info: Info;
-  updateMask: string;
-};
-
-export type UpdateSettingsRequest = {
-  settings: FormSettings;
-  updateMask: string;
-};
-
-export type CreateItemRequest = {
-  item: Item;
-  location: Location;
-};
-
-export type MoveItemRequest = {
-  originalLocation: Location;
-  newLocation: Location;
-};
-
-export type DeleteItemRequest = {
-  location: Location;
-};
-
-export type UpdateItemRequest = {
-  item: Item;
-  location: Location;
-  updateMask: string;
-};
-
-export type WriteControl =
-  | { requiredRevisionId: string }
-  | { targetRevisionId: string };
-
-export type Response = {
-  createItem?: CreateItemResponse;
-};
-
-export type CreateItemResponse = {
-  itemId: string;
-  questionId: string[];
-};
-
-export type Location = {
-  index?: number;
-};
-
-export type FormResponse = {
-  formId: string;
-  responseId: string;
-  createTime: string;
-  lastSubmittedTime: string;
-  respondentEmail?: string;
-  answers: { [key: string]: Answer };
-  totalScore?: number;
-};
-
-export type Answer = {
-  questionId: string;
-  grade?: Grade;
-  textAnswers?: TextAnswers;
-  fileUploadAnswers?: FileUploadAnswers;
-};
-
-export type TextAnswers = {
-  answers: TextAnswer[];
-};
-
-export type TextAnswer = {
-  value: string;
-};
-
-export type FileUploadAnswers = {
-  answers: FileUploadAnswer[];
-};
-
-export type FileUploadAnswer = {
-  fileId: string;
-  fileName: string;
-  mimeType: string;
-};
-
-export type Grade = {
-  score?: number;
-  correct?: boolean;
-  feedback?: Feedback;
-};
-
-export type Feedback = {
-  text?: string;
-  links?: { uri: string; description: string }[];
-};
-
-export interface FormGeneratorResponse {
-  initialForm: Form;
-  batchUpdate: BatchUpdateFormRequest;
-}
   
   ### Response Structure Example
   \`\`\`json
