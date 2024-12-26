@@ -339,6 +339,7 @@ export type WriteControl =
   8. ✓ Don't include file Upload Type Questions in the form
   9. ✓ Check for any missing or incorrect fields
   10. ✓ Ensure that all the required fields are there.
+  11. ✓ Cannot set option.value or option.image when option.isOther is true
   
   USER_PROMPT: ${userPrompt}
   `;
