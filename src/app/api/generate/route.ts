@@ -10,7 +10,7 @@ import { getPrompt } from "@/lib/prompt";
 
 const API_KEY = process.env.GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
 interface generateFormInput {
     userPrompt: string;
@@ -31,12 +31,11 @@ export async function POST(req: Request) {
     const response = result.response;
     const text = response.text();
 
+    
+
     const jsonString = text.replace(/^```json\s*([\s\S]*)\s*```$/g, "$1");
 
     const responseObject = JSON.parse(jsonString, null, 2);
-
-
-
     
     revalidatePath("/");
     return NextResponse.json(responseObject);
