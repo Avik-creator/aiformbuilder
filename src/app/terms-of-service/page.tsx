@@ -5,8 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const TermsOfService = () => {
   return (
     <div className="container mx-auto py-8 px-4">
-      <Card className="max-w-4xl mx-auto">
-        <CardContent className="p-6">
+
           <ScrollArea className="h-[80vh]">
             <div className="space-y-6">
               <h1 className="text-3xl font-bold mb-8">Terms of Service</h1>
@@ -97,8 +96,6 @@ const TermsOfService = () => {
               </section>
             </div>
           </ScrollArea>
-        </CardContent>
-      </Card>
     </div>
   );
 };
