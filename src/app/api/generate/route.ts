@@ -67,7 +67,6 @@ export async function POST(req: Request) {
 
   try {
     const finalPrompt = getPrompt(userPrompt);
-    console.log(finalPrompt);
 
     // Use Groq API for content generation
     const result = await client.chat.completions.create({
