@@ -297,13 +297,6 @@ export type WriteControl =
     "batchUpdate": {
       "requests": [
         {
-        "updateFormInfo: {
-          "info":{
-            "description": "Please fill out this form to register for the event",
-            "documentTitle": "Event Registration Form",
-          },
-          "updateMask": "description,documentTitle"
-        },
           "createItem": {
             "item": {
               "title": "What is your name?",
