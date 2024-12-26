@@ -49,7 +49,7 @@ export const getPrompt = (userPrompt: string) => {
      
   4. When option.isOther is true, ensure the following:
       - Allowed Question Types: isOther is only supported for "RADIO" and "CHECKBOX" question types. It must not be used with "DROP_DOWN".
-      - Do not include the following fields when isOther is true:
+      - Do not include the following fields when isOther is true! Important:
         - option.value
         - option.image
       - The option interface must adhere to the schema below:
