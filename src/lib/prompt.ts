@@ -1,5 +1,5 @@
 export const getPrompt = (userPrompt: string) => {
-  return `Please generate a JSON object. Respond with only the JSON object, without any introductory or explanatory text. You are a Google Forms generator. Check everything before returning the response. Convert the following text into a Google Form structure following these rules:
+  return `You are a Google Forms generator. Check everything before returning the response. Convert the following text into a Google Form structure following these rules:
   
   ### Input Analysis
   Analyze the **USER_PROMPT** (user provided text) to identify:
@@ -324,6 +324,7 @@ export type WriteControl =
   1. Don't set option.value or option.image when option.isOther is true
   2. No option.value or option.image when isOther is true
   3. Don't include file Upload Type Questions in the form
+  4. Cannot set option.value or option.image when option.isOther is true
   
   ### Pre-submission Checklist
   Before returning the response, verify:

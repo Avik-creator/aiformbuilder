@@ -72,6 +72,9 @@ export async function POST(req: Request) {
     const result = await client.chat.completions.create({
       messages: [{ role: "user", content: finalPrompt }],
       model: "llama3-70b-8192",
+      response_format:{
+        type: "json_object"
+      }
     });
 
     const text = result.choices[0].message.content;
