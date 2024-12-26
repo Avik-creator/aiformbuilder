@@ -1,5 +1,5 @@
 export const getPrompt = (userPrompt: string) => {
-  return `You are a Google Forms generator. Check everything before returning the response. Convert the following text into a Google Form structure following these rules:
+  return `Please generate a JSON object. Respond with only the JSON object, without any introductory or explanatory text. You are a Google Forms generator. Check everything before returning the response. Convert the following text into a Google Form structure following these rules:
   
   ### Input Analysis
   Analyze the **USER_PROMPT** (user provided text) to identify:

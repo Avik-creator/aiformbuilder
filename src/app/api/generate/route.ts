@@ -66,7 +66,7 @@ export async function POST(req: Request) {
   const { userPrompt }: generateFormInput = await req.json();
 
   try {
-    const finalPrompt = getPrompt(userPrompt);
+    const finalPrompt: string = getPrompt(userPrompt);
 
     // Use Groq API for content generation
     const result = await client.chat.completions.create({
@@ -75,10 +75,11 @@ export async function POST(req: Request) {
     });
 
     const text = result.choices[0].message.content;
-
     // Parse response if JSON format
     const jsonString = text?.replace(/^```json\s*([\s\S]*)\s*```$/g, "$1");
-    const responseObject = JSON.parse(jsonString, null, 2);
+
+
+    const responseObject = JSON.parse(jsonString as string);
 
 
     revalidatePath("/");
