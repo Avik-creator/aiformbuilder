@@ -1,4 +1,7 @@
 import type { Config } from "drizzle-kit";
+import { config } from 'dotenv';
+
+config({path: ".env.local"})
 
 export default {
   schema: "./src/lib/schema.ts",
@@ -6,7 +9,6 @@ export default {
   dialect: "postgresql",
   dbCredentials: {
     url:
-      process.env.DATABASE_URL ||
-      "postgres://admin:admin@localhost:5432/formbuilder",
+      process.env.DATABASE_URL!
   },
 } satisfies Config;
