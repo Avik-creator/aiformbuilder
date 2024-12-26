@@ -16,7 +16,8 @@ export const getErrorMessage = (error: FormGenerationError) => {
     'GOOGLE_API_ERROR': 'Error connecting to Google Forms',
     'BATCH_UPDATE_FAILED': 'Failed to add questions to form',
     'DB_ERROR': 'Error saving form details',
-    'BATCH_UPDATE_ERROR': 'Error updating form'
+    'BATCH_UPDATE_ERROR': 'Error updating form',
+    'INVALID_RESPONSE': 'Invalid response received from AI',
   };
 
   return errorMessages[error.code] || 'An unexpected error occurred';
