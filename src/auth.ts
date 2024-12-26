@@ -32,8 +32,6 @@ export const config = {
     async jwt({ token, user, account }) {
       // Initial sign in
       if (account && user) {
-        console.log('jwt', account)
-        console.log('jwtUser', user)
         const existingUser = await db.query.users.findFirst({
           where: eq(users.email, user.email!)
         });
@@ -96,8 +94,6 @@ export const config = {
       }
     },
     async session({ session, token }) {
-      console.log('session', session)
-      console.log('token', token)
       return {
         ...session,
         accessToken: token.access_token as string,
