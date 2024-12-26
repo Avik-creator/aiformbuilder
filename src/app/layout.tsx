@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AI Form Generator",
   description: "It's a form generator that uses AI to generate google forms.",
+  verification: {
+    google: process.env.GOOGLE_VERIFICATION_ID
+  }
 };
 
 export default function RootLayout({
