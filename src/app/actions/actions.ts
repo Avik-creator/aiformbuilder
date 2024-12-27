@@ -1,6 +1,6 @@
 'use server'
 
-import { auth, EnrichedSession } from "@/auth"
+import { auth, EnrichedSession, signOut } from "@/auth"
 import { createGoogleFormResponse, Form, FormGeneratorResponse } from "@/lib/types"
 import { users, forms, FormsInsert } from "@/lib/schema";
 import { db } from "@/lib/db";
@@ -49,31 +49,41 @@ export const generateFormFromAI = async (userPrompt: string): Promise<FormGenera
 export const createGoogleForm = async (formData: FormGeneratorResponse): Promise<createGoogleFormResponse> => {
   const session = (await auth()) as EnrichedSession
 
-  if (!session?.dbUserId) {
+  if (!session?.user?.email || session?.accessTokenExpiresAt < Date.now() / 1000) {
     throw new FormGenerationError(
       'AUTH_ERROR',
       'You must be logged in to create forms',
     );
   }
 
+
+
+
   const [user] = await db
     .select()
     .from(users)
-    .where(eq(users.dbUserId, session.dbUserId as string));
+    .where(eq(users.email, session.user?.email as string));
+
 
   if (!user) {
+    signOut();
     throw new FormGenerationError(
       'USER_NOT_FOUND',
       'User not found in database'
     );
   }
 
-  if (user.dbUserId !== session.dbUserId) {
+  if (user.email !== session.user?.email) {
+    signOut();
     throw new FormGenerationError(
       'USER_MISMATCH',
       'User authentication mismatch'
     );
+   
+    
   }
+
+
 
   const oauth2Client = new OAuth2Client({
     clientId: process.env.GOOGLE_CLIENT_ID,
