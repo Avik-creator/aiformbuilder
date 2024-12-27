@@ -14,6 +14,11 @@ FormCraft AI is a web application built with Next.js that leverages the power of
 - **Data Persistence**: All the forms you have generated are saved in our database for later retrieval.
 - **Privacy Focused**: We value your privacy, and we make sure to store your data in secure PostgreSQL databases
 
+
+## Demo:
+
+[X Link for the Video](https://x.com/avikm744/status/1871920601927151662)
+
 ## Getting Started
 
 Follow these instructions to get a local copy of the project up and running.
