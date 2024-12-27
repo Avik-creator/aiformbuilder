@@ -71,7 +71,7 @@ Follow these instructions to get a local copy of the project up and running.
     NEXTAUTH_SECRET="YOUR_NEXTAUTH_SECRET"
     NEXTAUTH_URL="YOUR_NEXTAUTH_URL"
     GOOGLE_VERIFICATION_ID="YOUR_GOOGLE_SITE_VERIFICATION_ID"
-    GROQ_API_KEY="YOUR_GROQ_API_KEY" # for AI generation. Get from https://console.groq.com/
+    GROQ_API_KEY="YOUR_GROQ_API_KEY"
     NEXT_PUBLIC_BASE_URL="http://localhost:3000"
     ```
 
