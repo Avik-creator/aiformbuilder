@@ -643,6 +643,7 @@ export type WriteControl =
 - Be especially careful with options that have 'isOther' set to true. Ensure that 'option.value' and 'option.image' are not present in such cases.
 - Ensure that only the specified question types are used and that no additional or unsupported types are included in the form.
 - Before submitting the response, conduct a thorough check using the pre-submission checklist to ensure full compliance with all specified rules and structures.
+- DO NOT set option.value or option.image when option.isOther is true
 
 ---
 `
