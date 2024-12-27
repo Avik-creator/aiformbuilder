@@ -1,21 +1,21 @@
+'use client'
+
 import React from "react";
-import { auth, signOut } from "@/auth";
+import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
-
-import { LayoutDashboard } from "lucide-react";
-import { LogOut } from "lucide-react";
+import { LayoutDashboard, LogOut } from 'lucide-react';
 import { ModeToggle } from "./ui/dark-mode-toggle";
-
-
+import { motion } from "framer-motion";
+import { signOut } from "next-auth/react";
 
 function SignOut() {
   return (
     <form
-      action={async () => {
-        "use server";
-        await signOut();
+      onSubmit={(e) => {
+        e.preventDefault();
+        signOut();
       }}
     >
       <Button type="submit">
@@ -26,19 +26,73 @@ function SignOut() {
   );
 }
 
-const Header = async () => {
-  const session = await auth();
+const Header = () => {
+  const { data: session } = useSession();
+
+  const logoVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 10
+      }
+    }
+  };
+
+  const textVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.08,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 10
+      }
+    }
+  };
 
   return (
-    <header className="border bottom-1">
-      <nav className="border-gray-200 px-4 py-3">
+    <header className="border-b">
+      <nav className="px-4 py-3">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <Link href="/">
-            <h1 className="md:text-2xl lg:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r to-purple-600 from-white">FormCraft AI</h1>
+          <Link href="/" className="flex items-center">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={logoVariants}
+            >
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-900 to-gray-600 flex items-center justify-center">
+                <span className="text-white font-bold text-xl">F</span>
+              </div>
+            </motion.div>
+            <motion.h1 
+              className="ml-2 text-2xl font-extrabold"
+              variants={textVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              FormCraftAI
+
+            </motion.h1>
           </Link>
           <div>
             {session?.user ? (
-              <div className="flex items-center gap-1 md:gap-1 lg:gap-4">
+              <div className="flex items-center gap-8 md:gap-1 lg:gap-4">
                 <ModeToggle/>
                 <Link href="/forms">
                   <Button variant="outline">
@@ -58,17 +112,16 @@ const Header = async () => {
                 <SignOut />
               </div>
             ) : (
-              <div className="flex">
+              <div className="flex gap-4">
                 <ModeToggle/>
-                <Link href="/api/auth/signin">
-                  <Button variant="link" className="text-md">
+                <Link href="/signin">
+                  <Button variant="default" className="text-md gap-4">
                     Sign in
                   </Button>
                 </Link>
               </div>
             )}
           </div>
-         
         </div>
       </nav>
     </header>
@@ -76,3 +129,4 @@ const Header = async () => {
 };
 
 export default Header;
+

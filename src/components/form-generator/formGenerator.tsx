@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
@@ -11,7 +11,6 @@ import { FormPreview } from "./formviewer"
 import { useToast } from "@/hooks/use-toast"
 import { getErrorMessage } from "@/lib/utils"
 import { FormGenerationError } from "@/lib/error"
-
 
 // Suggestions array for form templates
 const suggestions = [
@@ -24,6 +23,49 @@ const suggestions = [
   { id: 7, title: "Lead Generation Form", defaultPrompt: "Create a lead generation form to collect information from potential customers." },
   { id: 8, title: "Payment Form", defaultPrompt: "Create a payment form that collects billing information." },
 ];
+
+const HoveringWand = () => (
+	<motion.div
+		className="fixed inset-0 pointer-events-none z-50 flex flex-col items-center justify-center gap-4"
+		initial={{ opacity: 0 }}
+		animate={{ opacity: 1 }}
+		exit={{ opacity: 0 }}
+	>
+		{/* Wand Animation */}
+		<motion.div
+			className="text-purple-500"
+			animate={{
+				rotate: [0, 20, 0, -20, 0],
+				scale: [1, 1.2, 1, 1.2, 1]
+			}}
+			transition={{
+				duration: 2,
+				ease: 'anticipate',
+				times: [0, 0.25, 0.5, 0.75, 1],
+				repeat: Infinity,
+				repeatDelay: 0.5
+			}}
+		>
+			<Wand2 size={64} />
+		</motion.div>
+
+		{/* Text Animation */}
+		<motion.p
+			className="text-xl font-semibold text-purple-700"
+			animate={{
+				opacity: [0, 1, 0] // Animates from invisible (0) to visible (1) and back to invisible (0)
+			}}
+			transition={{
+				duration: 2, // 2 seconds for each full cycle
+				repeat: Infinity, // Loops infinitely
+				ease: 'easeInOut' // Smooth transitions
+			}}
+		>
+			Oh My Me! Wait till the Magic Happens
+		</motion.p>
+	</motion.div>
+)
+
 
 export default function FormGenerator() {
   const [prompt, setPrompt] = useState(""); // User's prompt input
@@ -42,7 +84,6 @@ export default function FormGenerator() {
     try {
       const aiResponse = await generateFormFromAI(prompt);
       
-
       const createdForm = await createGoogleForm(aiResponse);
       
       if (!createdForm?.Form?.formId) {
@@ -72,8 +113,6 @@ export default function FormGenerator() {
       });
 
     } catch (error) {
-
-      
       let errorMessage = 'An unexpected error occurred';
       let errorDescription = 'Please try again later';
       
@@ -91,34 +130,46 @@ export default function FormGenerator() {
       setIsGenerating(false);
     }
   };
+
   return (
     <>
-      {/* Display form preview if links are available */}
+      <style jsx global>{`
+        ::selection {
+          background-color: rgba(168, 85, 247, 0.3);
+          color: #ffffff;
+        }
+      `}</style>
+      <AnimatePresence>
+        {isGenerating && <HoveringWand />}
+      </AnimatePresence>
       {formLinks ? (
         <FormPreview editLink={formLinks.editLink} viewLink={formLinks.viewLink} />
       ) : (
-        // Motion animated card for form input
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="space-y-8 max-w-3xl mx-auto"
+          className="space-y-8 max-w-3xl mx-auto p-4 relative"
         >
-          <Card className="overflow-hidden">
+          {isGenerating && (
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-10 rounded-lg" />
+          )}
+          <Card className="overflow-hidden border border-purple-500/20 shadow-lg bg-gradient-to-br from-gray-900 to-gray-800">
             <CardContent className="p-6">
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-                <h2 className="text-2xl font-bold mb-4">Describe Your Form</h2>
+                <h2 className="text-2xl font-bold mb-4 text-white">Describe Your Form</h2>
                 <Textarea
                   placeholder="E.g., Create a customer feedback form with questions about product quality, delivery experience, and overall satisfaction..."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   rows={4}
-                  className="mb-4"
+                  className="mb-4 bg-gray-800 border-gray-700 focus:border-purple-500 focus:ring-purple-500 text-gray-100 placeholder-gray-400"
+                  disabled={isGenerating}
                 />
                 <Button
                   onClick={handleGenerate}
                   disabled={isGenerating || prompt.trim() === ""}
-                  className="w-full"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-colors duration-200"
                 >
                   {isGenerating ? (
                     <>
@@ -136,18 +187,18 @@ export default function FormGenerator() {
             </CardContent>
           </Card>
 
-          {/* Suggestions buttons */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="flex max-w-2xl mt-16 flex-wrap justify-center gap-3 items-center"
+            className="flex flex-wrap justify-center gap-3 items-center mt-8"
           >
             {suggestions.map((suggestion) => (
               <button
                 key={suggestion.id}
-                className="text-gray-300 text-[10px] border-purple-400 hover:bg-gray-800 hover:scale-110 transition-all rounded-3xl bg-transparent border py-1 px-2"
+                className="text-gray-200 text-xs border-purple-400 hover:bg-gray-800 hover:scale-105 transition-all rounded-full bg-gray-800/50 border py-1.5 px-3 shadow-md"
                 onClick={() => handleSuggestionClick(suggestion)}
+                disabled={isGenerating}
               >
                 {suggestion.title}
               </button>
@@ -158,3 +209,4 @@ export default function FormGenerator() {
     </>
   );
 }
+

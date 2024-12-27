@@ -10,7 +10,7 @@ export default async function FormGenerationPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 min-h-screen">
       <h1 className="text-4xl font-bold mb-8 text-center">AI Form Generator</h1>
       <FormGenerator />
     </div>
