@@ -66,89 +66,89 @@ You are a Google Forms generator. Convert the following text into a Google Form 
 
   ### Available Types and Interfaces
   
-interface Question {
-    questionId: string;
-    required: boolean;
-    kind: ChoiceQuestion | TextQuestion | ScaleQuestion | DateQuestion | TimeQuestion | RatingQuestion;
-}
+    interface Question {
+        questionId: string;
+        required: boolean;
+        kind: ChoiceQuestion | TextQuestion | ScaleQuestion | DateQuestion | TimeQuestion | RatingQuestion;
+    }
 
-export enum ChoiceType {
-  CHOICE_TYPE_UNSPECIFIED = "CHOICE_TYPE_UNSPECIFIED", // Default value, not used
-  RADIO = "RADIO", // Radio buttons: User can only pick one option
-  CHECKBOX = "CHECKBOX", // Checkboxes: User can pick any number of options
-  DROP_DOWN = "DROP_DOWN", // Drop-down menu: User can select one option from a dropdown
-}
+    export enum ChoiceType {
+      CHOICE_TYPE_UNSPECIFIED = "CHOICE_TYPE_UNSPECIFIED", // Default value, not used
+      RADIO = "RADIO", // Radio buttons: User can only pick one option
+      CHECKBOX = "CHECKBOX", // Checkboxes: User can pick any number of options
+      DROP_DOWN = "DROP_DOWN", // Drop-down menu: User can select one option from a dropdown
+    }
 
-export enum GoToAction {
-  GO_TO_ACTION_UNSPECIFIED = "GO_TO_ACTION_UNSPECIFIED", // Default value, not used
-  NEXT_SECTION = "NEXT_SECTION",
-  RESTART_FORM = "RESTART_FORM",
-  SUBMIT_FORM = "SUBMIT_FORM",
-}
+    export enum GoToAction {
+      GO_TO_ACTION_UNSPECIFIED = "GO_TO_ACTION_UNSPECIFIED", // Default value, not used
+      NEXT_SECTION = "NEXT_SECTION",
+      RESTART_FORM = "RESTART_FORM",
+      SUBMIT_FORM = "SUBMIT_FORM",
+    }
 
-// Option interface for the choices in a question
-export interface Option {
-  value: string; // value of the option. Use 
-  image?: Image; // Optional image associated with the option
-  isOther: boolean; 
-  goToAction?: GoToAction; // Action to go to a specific section (optional)
-  goToSectionId?: string; // Section ID to go to (optional)
-}
-// - Cannot set option.value or option.image when option.isOther is true
+    // Option interface for the choices in a question
+    export interface Option {
+      value: string; // value of the option. Use 
+      image?: Image; // Optional image associated with the option
+      isOther: boolean; 
+      goToAction?: GoToAction; // Action to go to a specific section (optional)
+      goToSectionId?: string; // Section ID to go to (optional)
+    }
+    // - Cannot set option.value or option.image when option.isOther is true
 
-// Multiple Choice/Checkbox/Dropdown
-interface ChoiceQuestion {
-    type: "RADIO" | "CHECKBOX" | "DROP_DOWN"; // Type of the choice question
-    options: Option[];
-    shuffle: boolean;
-}
+    // Multiple Choice/Checkbox/Dropdown
+    interface ChoiceQuestion {
+        type: "RADIO" | "CHECKBOX" | "DROP_DOWN"; // Type of the choice question
+        options: Option[];
+        shuffle: boolean;
+    }
 
-ChoiceQuestion:
-- The type field must be one of the following valid values:
-  - "RADIO"
-  - "CHECKBOX"
-  - "DROP_DOWN"
-- Do not use any other values for this field.
-- options is a required field in case of DROP_DOWN and must be an array of Option objects as per schema
-
-
-// Text Input
-interface TextQuestion {
-    paragraph: boolean;  // true for long answer, false for short
-}
+    ChoiceQuestion:
+    - The type field must be one of the following valid values:
+      - "RADIO"
+      - "CHECKBOX"
+      - "DROP_DOWN"
+    - Do not use any other values for this field.
+    - options is a required field in case of DROP_DOWN and must be an array of Option objects as per schema
 
 
-// Rating Scale
-interface ScaleQuestion {
-    low: integer;
-    high: integer;
-    lowLabel?: string;
-    highLabel?: string;
-}
+    // Text Input
+    interface TextQuestion {
+        paragraph: boolean;  // true for long answer, false for short
+    }
 
-// Date Input
-interface DateQuestion {
-    includeTime: boolean;
-    includeYear: boolean;
-}
 
-// Time Input
-interface TimeQuestion {
-    duration: boolean;
-}
+    // Rating Scale
+    interface ScaleQuestion {
+        low: integer;
+        high: integer;
+        lowLabel?: string;
+        highLabel?: string;
+    }
 
-// Star/Heart Rating
-interface RatingQuestion {
-  ratingScaleLevel: number;
-  iconType: RatingIconType;
-}
+    // Date Input
+    interface DateQuestion {
+        includeTime: boolean;
+        includeYear: boolean;
+    }
 
-enum RatingIconType {
-  STAR = "STAR",
-  HEART = "HEART",
-  THUMB_UP = "THUMB_UP",
-  RATING_ICON_TYPE_UNSPECIFIED = "RATING_ICON_TYPE_UNSPECIFIED",
-}
+    // Time Input
+    interface TimeQuestion {
+        duration: boolean;
+    }
+
+    // Star/Heart Rating
+    interface RatingQuestion {
+      ratingScaleLevel: number;
+      iconType: RatingIconType;
+    }
+
+    enum RatingIconType {
+      STAR = "STAR",
+      HEART = "HEART",
+      THUMB_UP = "THUMB_UP",
+      RATING_ICON_TYPE_UNSPECIFIED = "RATING_ICON_TYPE_UNSPECIFIED",
+    }
 
   
   ### Response Structure Example
