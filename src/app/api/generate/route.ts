@@ -71,10 +71,12 @@ export async function POST(req: Request) {
     // Use Groq API for content generation
     const result = await client.chat.completions.create({
       messages: [{ role: "user", content: finalPrompt }],
-      model: "llama3-70b-8192",
+      model: "llama-3.1-8b-instant",
       response_format:{
         type: "json_object"
-      }
+      },
+      temperature: 0,
+      
     });
 
     const text = result.choices[0].message.content;

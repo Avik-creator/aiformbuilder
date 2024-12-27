@@ -355,14 +355,16 @@ You are a Google Forms generator. Your task is to convert the USER_PROMPT into a
 - **Form Title and Description**: Identify the form's title and description from the USER_PROMPT.
 - **Questions**: Extract the required questions and determine the most appropriate question types for each.
 
+
 ### Schema Validation Rules
 - **Location Object**: Ensure the 'location' object is a sibling of 'item', not nested inside it.
 - **Request Structure**: Each request must follow the exact structure provided, with "createItem" containing "item" and "location" as siblings.
 - **Question Types**: Each question must have exactly one question type, and no mixing of types is allowed.
 - **isOther Usage**: Only use "isOther" with "RADIO" or "CHECKBOX" types and ensure "option.value" and "option.image" are not set when "isOther" is true.
 - **No File Uploads**: Do not include file upload type questions in the form.
-- **DO NOT and I MEAN DO NOT EVER set option.value or option.image when option.isOther is true. Don't include the following fields when isOther is true**
 - **Whenever giving ChoiceOptions make sure that ChoiceQuestion.options is required.**
+
+### PLEASE DO NOT SET OPTION.VALUE OR OPTION.IMAGE WHEN OPTION.ISOTHER IS TRUE. DON'T INCLUDE THE FOLLOWING FIELDS WHEN ISOTHER IS TRUE
 
 ### Response Structure
 The response should be in JSON format, matching the example provided, with "initialForm" and "batchUpdate" sections.
@@ -471,7 +473,7 @@ export enum GoToAction {
 export interface Option {
   value: string; // The text or value of the option
   image?: Image; // Optional image associated with the option
-  isOther: boolean; // Whether this option is an "Other" option - DO NOT SET option.value or option.image when option.isOther is true
+  isOther: boolean; // Whether this option is an "Other" option - DO NOT SET Option.value or Option.image when Option.isOther is true
   goToAction?: GoToAction; // Action to go to a specific section (optional)
   goToSectionId?: string; // Section ID to go to (optional)
 }
@@ -638,13 +640,19 @@ export type WriteControl =
   | { targetRevisionId: string };
 
 
-**Additional Reminders:**
-- Double-check each request to ensure compliance with the schema validation rules. Confirm that no optional fields are mistakenly included and that all required fields are present.
-- Be especially careful with options that have 'isOther' set to true. Ensure that 'option.value' and 'option.image' are not present in such cases.
-- Ensure that only the specified question types are used and that no additional or unsupported types are included in the form.
-- Before submitting the response, conduct a thorough check using the pre-submission checklist to ensure full compliance with all specified rules and structures.
-- DO NOT set option.value or option.image when option.isOther is true
+Checklist Before Submission
+  - Schema Compliance: Confirm all rules are followed.
+  - Location Validation: "location" is a sibling of "item".
+  - Indexing: Questions are numbered sequentially from 0.
+  - Question Types: No mixed types, and isOther is used properly.
+  - Options:
+      -  When "isOther" is true, remove "option.value" and "option.image".
+      -  Ensure "ChoiceQuestion.options" is always required.
+  - File Upload: No file upload types allowed.
+  - Enums: Check that enums match defined values.
 
----
+
+Note:
+The API will throw an error "Cannot set option.value or option.image when option.isOther is true" if these fields are present with isOther set to true. Ensure your JSON does not trigger this error.
 `
 };

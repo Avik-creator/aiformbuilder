@@ -1,8 +1,8 @@
 'use server'
 
-import { auth, EnrichedSession, signOut } from "@/auth"
+import { auth, signOut } from "@/auth"
 import { createGoogleFormResponse, Form, FormGeneratorResponse } from "@/lib/types"
-import { users, forms, FormsInsert } from "@/lib/schema";
+import { users, forms, FormsInsert, accounts } from "@/lib/schema";
 import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { OAuth2Client } from 'google-auth-library';
@@ -47,22 +47,15 @@ export const generateFormFromAI = async (userPrompt: string): Promise<FormGenera
 }
 
 export const createGoogleForm = async (formData: FormGeneratorResponse): Promise<createGoogleFormResponse> => {
-  const session = (await auth()) as EnrichedSession
+  const session = await auth()
 
-  if (!session?.user?.email || session?.accessTokenExpiresAt < Date.now() / 1000) {
-    throw new FormGenerationError(
-      'AUTH_ERROR',
-      'You must be logged in to create forms',
-    );
-  }
-
-
+  
 
 
   const [user] = await db
     .select()
     .from(users)
-    .where(eq(users.email, session.user?.email as string));
+    .where(eq(users.email, session?.user?.email as string));
 
 
   if (!user) {
@@ -73,7 +66,7 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
     );
   }
 
-  if (user.email !== session.user?.email) {
+  if (user.email !== session?.user?.email) {
     signOut();
     throw new FormGenerationError(
       'USER_MISMATCH',
@@ -82,6 +75,13 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
    
     
   }
+
+  const [accountInfo] = await db.select({
+    accessToken: accounts.access_token,
+    refreshToken: accounts.refresh_token
+  }).from(accounts).where(eq(accounts.userId, user.id))
+
+
 
 
 
@@ -92,8 +92,8 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
 
   try {
     oauth2Client.setCredentials({
-      access_token: session.accessToken,
-      refresh_token: session.refreshToken,
+      access_token: accountInfo?.accessToken,
+      refresh_token: accountInfo?.refreshToken,
     })
 
     const googleForms = google.forms({version: "v1", auth: oauth2Client})
@@ -133,15 +133,26 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
 }
 
 export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorResponse, formId: string, createdForm: createGoogleFormResponse): Promise<any> => {
-  const session = (await auth()) as EnrichedSession
+  const session = await auth()
 
 
-  if (!session?.dbUserId) {
+  if (!session?.user?.email) {
     throw new FormGenerationError(
       'AUTH_ERROR',
       'You must be logged in to update forms'
     );
   }
+
+  const [user] = await db
+  .select()
+  .from(users)
+  .where(eq(users.email, session?.user?.email as string));
+
+  const [accountInfo] = await db.select({
+    accessToken: accounts.access_token,
+    refreshToken: accounts.refresh_token
+  }).from(accounts).where(eq(accounts.userId, user.id))
+
 
   try {
     const oauth2Client = new OAuth2Client({
@@ -150,14 +161,11 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
     })
 
     oauth2Client.setCredentials({
-      access_token: session?.accessToken,
-      refresh_token: session?.refreshToken,
+      access_token: accountInfo?.accessToken,
+      refresh_token: accountInfo?.refreshToken
     })
 
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.dbUserId, session.dbUserId as string));
+  
 
     if (!user) {
       throw new FormGenerationError(
@@ -166,7 +174,7 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
       );
     }
 
-    if (user.dbUserId !== session.dbUserId) {
+    if (user.email !== session?.user?.email) {
       throw new FormGenerationError(
         'USER_MISMATCH',
         'User authentication mismatch'
@@ -198,6 +206,7 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
 
     const newForm = await db.transaction(async (tx) => {
       const [insertedForm] = await tx.insert(forms).values({
+        id: formId,
         title: formData.initialForm.info.title as string,
         formId: formId,
         description: formData.initialForm.info.description || '',
