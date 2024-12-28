@@ -40,19 +40,21 @@ export default function RootLayout({
        
 
         <SessionProvider>
-        <Header/>
+        
         <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
+            <Header/>
         {children}
         <Analytics/>
         <Toaster />
+        <Footer/>
         </ThemeProvider>
         </SessionProvider>
-        <Footer/>
+       
       </body>
     </html>
   );
