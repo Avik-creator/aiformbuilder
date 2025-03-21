@@ -81,15 +81,6 @@ const Header = () => {
                 <Image src={logo} width={100} height={100} alt="Logo"/>
               </div>
             </motion.div>
-            <motion.h1 
-              className="ml-2 text-2xl font-extrabold"
-              variants={textVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              FormCraftAI
-
-            </motion.h1>
           </Link>
           <div>
             {session?.user ? (
