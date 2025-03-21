@@ -47,6 +47,10 @@ export const metadata: Metadata = {
     title: "FormCraft AI",
     description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
 
+  },
+  icons:{
+    icon:"/logo.png",
+    apple:"/logo.png"
   }
 };
 
