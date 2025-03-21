@@ -23,6 +23,10 @@ export const metadata: Metadata = {
   description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
   verification: {
     google: process.env.GOOGLE_VERIFICATION_ID
+  },
+  icons:{
+    apple: "./logo.png",
+    icon:"./logo.png"
   }
 };
 
