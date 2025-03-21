@@ -83,7 +83,7 @@ export async function sendWelcomeEmail(user: {
                   <li>And much more...</li>
                 </ul>
                 
-                <a href="https://aiformbuilder-delta.vercel.app/" class="button">
+                <a href="https://formcraftai-delta.vercel.app" class="button">
                   Get Started
                 </a>
                 

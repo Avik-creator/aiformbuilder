@@ -19,14 +19,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FormCraft AI",
+  title: {
+    default: "FormCraft AI",
+    template: "%s | FormCraft AI",
+  },
   description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
+  abstract: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
+  creator: "Avik Mukherjee",
+  metadataBase: new URL("https://formcraftai-delta.vercel.app"),
+
   verification: {
     google: process.env.GOOGLE_VERIFICATION_ID
   },
-  icons:{
-    apple: "./logo.png",
-    icon:"./logo.png"
+  openGraph:{
+    title: "FormCraft AI",
+    description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
+    type: "website",
+    locale: "en_US",
+    siteName: "FormCraft AI",
+    countryName:"India",
+    url:"https://formcraftai-delta.vercel.app"
+  },
+  twitter:{
+    card: "summary",
+    creator: "Avik Mukherjee",
+    site: "FormCraft AI",
+    title: "FormCraft AI",
+    description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
+
   }
 };
 

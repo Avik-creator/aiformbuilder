@@ -23,7 +23,8 @@ export const {
           include_granted_scopes: "true",
           scope: [
             "https://www.googleapis.com/auth/forms.body",
-            
+            'https://www.googleapis.com/auth/drive.file',
+            "https://www.googleapis.com/auth/forms.responses.readonly",
             "openid",
             "email",
             "profile",
