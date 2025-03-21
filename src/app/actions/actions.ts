@@ -103,6 +103,7 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
       requestBody: {
         info:{
           title: formData.initialForm.info.title,
+          documentTitle: formData.initialForm.info.title,
         }
       }
     })
@@ -113,7 +114,6 @@ export const createGoogleForm = async (formData: FormGeneratorResponse): Promise
         'Failed to create Google Form'
       );
     }
-
 
 
     return {
@@ -187,7 +187,9 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
     const response = await googleForms.forms.batchUpdate({
       formId: formId,
       auth: oauth2Client,
+      
       requestBody: {
+        
         requests: formData?.batchUpdate?.requests as any[],
         includeFormInResponse: true
       }
@@ -235,6 +237,191 @@ export const sendBatchUpdateToGoogleForm = async (formData: FormGeneratorRespons
     throw new FormGenerationError(
       'BATCH_UPDATE_ERROR',
       'Error updating form',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
+  }
+  
+}
+
+export const deleteForm = async (formId: string) => {
+  const session = await auth();
+  
+  if (!session?.user?.email) {
+    throw new FormGenerationError(
+      'AUTH_ERROR',
+      'You must be logged in to delete forms'
+    );
+  }
+  
+  // Get user and authentication info
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, session?.user?.email as string));
+    
+  const [accountInfo] = await db.select({
+    accessToken: accounts.access_token,
+    refreshToken: accounts.refresh_token
+  }).from(accounts).where(eq(accounts.userId, user.id));
+  
+  // Verify form ownership
+  const [formToDelete] = await db
+    .select()
+    .from(forms)
+    .where(eq(forms.id, formId));
+    
+  if (!formToDelete) {
+    throw new FormGenerationError(
+      'FORM_NOT_FOUND',
+      'Form not found in database'
+    );
+  }
+  
+  if (formToDelete.userId !== user.id) {
+    throw new FormGenerationError(
+      'PERMISSION_DENIED',
+      'You do not have permission to delete this form'
+    );
+  }
+  
+  try {
+    // Set up OAuth client
+    const oauth2Client = new OAuth2Client({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    });
+    
+    oauth2Client.setCredentials({
+      access_token: accountInfo?.accessToken,
+      refresh_token: accountInfo?.refreshToken
+    });
+    
+    // Delete from Google Drive
+    const drive = google.drive({version: 'v2', auth: oauth2Client});
+    await drive.files.delete({
+      fileId: formId
+    });
+    
+    // Delete from your database
+    await db.delete(forms).where(eq(forms.id, formId));
+    
+    return {
+      success: true,
+      message: "Form successfully deleted"
+    };
+  } catch (error) {
+    if (error instanceof FormGenerationError) {
+      throw error;
+    }
+    throw new FormGenerationError(
+      'DELETE_ERROR',
+      'Error deleting form',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
+  }
+}
+
+export const getFormResponses = async (formId: string) => {
+  const session = await auth();
+  if (!session?.user?.email) {
+    throw new FormGenerationError(
+      'AUTH_ERROR',
+      'You must be logged in to view responses'
+    );
+  }
+  
+  // Get user and authentication info
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, session?.user?.email as string));
+  const [accountInfo] = await db.select({
+    accessToken: accounts.access_token,
+    refreshToken: accounts.refresh_token
+  }).from(accounts).where(eq(accounts.userId, user.id));
+  
+  // Verify form ownership
+  const [formToAccess] = await db
+    .select()
+    .from(forms)
+    .where(eq(forms.id, formId));
+  if (!formToAccess) {
+    throw new FormGenerationError(
+      'FORM_NOT_FOUND',
+      'Form not found in database'
+    );
+  }
+  if (formToAccess.userId !== user.id) {
+    throw new FormGenerationError(
+      'PERMISSION_DENIED',
+      'You do not have permission to view responses for this form'
+    );
+  }
+  
+  try {
+    // Set up OAuth client
+    const oauth2Client = new OAuth2Client({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    });
+    oauth2Client.setCredentials({
+      access_token: accountInfo?.accessToken,
+      refresh_token: accountInfo?.refreshToken
+    });
+    
+    // Get the form structure first
+    const googleForms = google.forms({version: "v1", auth: oauth2Client});
+    const formStructure = await googleForms.forms.get({
+      formId: formId
+    });
+    
+    // Create a map of question IDs to question texts
+    const questionMap: Record<string, { title: string }> = {};
+    formStructure.data.items?.forEach(item => {
+      if (item.questionItem?.question?.questionId) {
+        questionMap[item.questionItem.question.questionId] = {
+          title: item.title || '',
+        };
+      }
+    });
+    
+    // Get form responses
+    const response = await googleForms.forms.responses.list({
+      formId: formId
+    });
+    
+    const responses = response.data.responses;
+    
+    // Enhance responses with question text
+    const enhancedResponses = responses?.map(resp => {
+      const enhancedAnswers: { [key: string]: any } = {};
+      
+      for (const [questionId, answer] of Object.entries(resp.answers || {})) {
+        enhancedAnswers[questionId] = {
+          ...answer,
+          questionText: questionMap[questionId]?.title || 'Unknown Question',
+        };
+      }
+      
+      return {
+        ...resp,
+        enhancedAnswers
+      };
+    });
+    
+    
+    return {
+      responseCount: responses?.length || 0,
+      responses: enhancedResponses || []
+    };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof FormGenerationError) {
+      throw error;
+    }
+    throw new FormGenerationError(
+      'RESPONSE_FETCH_ERROR',
+      'Error fetching form responses',
       error instanceof Error ? error.message : 'Unknown error'
     );
   }

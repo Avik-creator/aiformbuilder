@@ -246,3 +246,26 @@ export type BatchUpdateFormResponse = {
   replies: Response[];
   writeControl?: WriteControl;
 };
+
+
+interface TextAnswer {
+  value: string;
+}
+
+export interface Answer {
+  questionId: string;
+  textAnswers?: {
+    answers: TextAnswer[];
+  };
+  questionText?: string;
+}
+
+export interface Response {
+  answers: {
+    [questionId: string]: Answer;
+  };
+}
+
+export interface ResponseData {
+  responses: Response[];
+}
