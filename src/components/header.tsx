@@ -80,6 +80,15 @@ const Header = () => {
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-900 to-gray-600 flex items-center justify-center" aria-label="logo">
                 <Image src={logo} width={100} height={100} alt="Logo"/>
               </div>
+               <motion.h1 
+               className="ml-2 text-2xl font-extrabold"
+               variants={textVariants}
+               initial="hidden"
+               animate="visible"
+             >
+               FormCraftAI
+ 
+             </motion.h1>
             </motion.div>
           </Link>
           <div>
