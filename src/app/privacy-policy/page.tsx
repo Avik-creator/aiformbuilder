@@ -39,7 +39,7 @@ const PrivacyPolicy = () => {
             <h1 className="text-4xl font-bold">Privacy Policy</h1>
             
             <div className="text-sm text-muted-foreground">
-              Last updated: December 26, 2024
+              Last updated: March 21, 2025
             </div>
 
             <section className="space-y-6">
@@ -74,6 +74,20 @@ const PrivacyPolicy = () => {
                   <li>Association between forms and users</li>
                 </ul>
               </div>
+              <div className="space-y-4">
+                <h3 className="text-2xl font-medium">2.3 Google User Data</h3>
+                <p className="text-lg">
+                  When you use Google services with our application, we only collect and store:
+                </p>
+                <ul className="list-disc pl-6 space-y-3 text-lg mt-4">
+                  <li>Form IDs of created forms</li>
+                  <li>Edit and view links for forms</li>
+                  <li>Information about which user created which form</li>
+                </ul>
+                <p className="text-lg mt-4">
+                  We do not collect, store, or process any other Google user data beyond what is strictly necessary to provide our form creation service.
+                </p>
+              </div>
             </section>
 
             <section className="space-y-6">
@@ -106,9 +120,45 @@ const PrivacyPolicy = () => {
             </section>
 
             <section className="space-y-6">
-              <h2 className="text-3xl font-semibold">5. Contact Us</h2>
+              <h2 className="text-3xl font-semibold">5. Sharing and Disclosure of Google User Data</h2>
               <p className="text-lg">
-                If you have questions about this Privacy Policy or our data practices, please contact us at:
+                We do not share, transfer, or disclose Google user data to any third parties. The form IDs, edit links, and view links we collect are only used internally to provide you with our service and are not shared with any external entities, individuals, or services.
+              </p>
+            </section>
+
+            <section className="space-y-6">
+              <h2 className="text-3xl font-semibold">6. Data Retention and Deletion</h2>
+              <div className="space-y-4">
+                <h3 className="text-2xl font-medium">6.1 Retention of Google User Data</h3>
+                <p className="text-lg">
+                  We retain Google user data (form IDs, edit links, and view links) only for as long as necessary to provide our service to you. This data is stored in our database for the duration of your account's existence.
+                </p>
+                <h3 className="text-2xl font-medium mt-6">6.2 Deletion of Google User Data</h3>
+                <p className="text-lg">
+                  Google user data will be deleted in the following circumstances:
+                </p>
+                <ul className="list-disc pl-6 space-y-3 text-lg mt-4">
+                  <li>When you delete a form through our service</li>
+                  <li>When you delete your account with FormCraft AI</li>
+                  <li>Upon your explicit request to delete specific data</li>
+                </ul>
+                <p className="text-lg mt-4">
+                  To request deletion of your Google user data, please contact us at the email address provided in Section 8.
+                </p>
+              </div>
+            </section>
+
+            <section className="space-y-6">
+              <h2 className="text-3xl font-semibold">7. AI and Machine Learning</h2>
+              <p className="text-lg">
+                FormCraft AI does not retain or use any Google user data obtained through Workspace APIs to develop, improve, or train generalized artificial intelligence (AI) or machine learning (ML) models. Your form data is used solely for providing you with our form creation service and is not used for any AI/ML training purposes.
+              </p>
+            </section>
+
+            <section className="space-y-6">
+              <h2 className="text-3xl font-semibold">8. Contact Us</h2>
+              <p className="text-lg">
+                If you have questions about this Privacy Policy, our data practices, or wish to request deletion of your data, please contact us at:
                 <br />
                 <span className="text-primary font-medium">avikm744@gmail.com</span>
               </p>
