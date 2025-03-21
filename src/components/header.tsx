@@ -9,6 +9,7 @@ import { LayoutDashboard, LogOut } from 'lucide-react';
 import { ModeToggle } from "./ui/dark-mode-toggle";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
+import logo from "@/../public/logo.png";
 
 function SignOut() {
   return (
@@ -76,8 +77,8 @@ const Header = () => {
               animate="visible"
               variants={logoVariants}
             >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-900 to-gray-600 flex items-center justify-center">
-                <span className="text-white font-bold text-xl">F</span>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-900 to-gray-600 flex items-center justify-center" aria-label="logo">
+                <Image src={logo} width={100} height={100} alt="Logo"/>
               </div>
             </motion.div>
             <motion.h1 
