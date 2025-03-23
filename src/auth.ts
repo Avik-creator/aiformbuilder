@@ -20,7 +20,7 @@ export const {
         params:{
           access_type: "offline",
           prompt: "consent",
-          include_granted_scopes: "true",
+          include_granted_scopes: "false",
           scope: [
             "https://www.googleapis.com/auth/forms.body",
             'https://www.googleapis.com/auth/drive.file',
