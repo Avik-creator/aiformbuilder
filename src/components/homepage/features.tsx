@@ -16,8 +16,8 @@ const features = [
     icon: Zap,
   },
   {
-    title: 'Intelligent Suggestions',
-    description: 'Get AI-driven suggestions to improve your form\'s effectiveness.',
+    title: "Effective Form Management",
+    description: 'Manage and track form responses with ease.',
     icon: Sparkles,
   },
 ]
