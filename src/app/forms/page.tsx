@@ -48,7 +48,7 @@ export default async function FormsPage() {
 
 
   return (
-    <div className="container mx-auto py-10 min-h-screen justify-center items-center">
+    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 min-h-screen justify-center items-center">
       <h1 className="text-3xl font-bold mb-6">Your Forms</h1>
       {forms.length === 0 ? (
         <NoForms />

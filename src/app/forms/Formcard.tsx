@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Trash2, Eye, ExternalLink, FileEdit } from "lucide-react"
+import { Trash2, Eye, ExternalLink, FileEdit, FileSpreadsheet, FileType } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,8 @@ import {
 import { deleteForm, getFormResponses } from "../actions/actions" // Import your server actions
 import { useRouter } from "next/navigation"
 import { toast } from "@/hooks/use-toast" // Import toast component if available
+
+
 
 interface FormCardProps {
   form: {
@@ -72,6 +74,129 @@ export function FormCard({ form, index }: FormCardProps) {
       setIsDeleteDialogOpen(false)
     }
   }
+
+  const downloadAsExcel = () => {
+    if (!responseData) return;
+    
+    try {
+      // Create CSV content
+      let csvContent = "data:text/csv;charset=utf-8,";
+      
+      // Add headers based on first response if available
+      if (responseData.responses.length > 0) {
+        const firstResponse = responseData.responses[0];
+        const headers = Object.values(firstResponse.enhancedAnswers || {})
+          .map((answer: any) => answer.questionText || "Unnamed Question");
+        csvContent += headers.join(",") + "\n";
+        
+        // Add rows
+        responseData.responses.forEach(response => {
+          const row = Object.values(response.enhancedAnswers || {})
+            .map((answer: any) => {
+              // Sanitize the value for CSV (wrap in quotes and escape any quotes inside)
+              const value = answer.textAnswers?.answers?.[0]?.value || "";
+              return `"${value.replace(/"/g, '""')}"`;
+            });
+          csvContent += row.join(",") + "\n";
+        });
+      }
+      
+      // Create download link
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `${form.title}_responses.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Download complete",
+        description: "Responses have been downloaded as CSV",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to download responses",
+        variant: "destructive",
+      });
+    }
+  };
+
+
+const downloadAsPDF = () => {
+    if (!responseData) return;
+    
+    try {
+      // Create a new window for printing
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        toast({
+          title: "Error",
+          description: "Pop-up blocked. Please allow pop-ups to download PDF.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Build HTML content
+      let htmlContent = `
+        <html>
+        <head>
+          <title>${form.title} - Responses</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #333; }
+            .response { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+            .question { color: #555; margin-bottom: 5px; font-weight: bold; }
+            .answer { margin-bottom: 15px; }
+          </style>
+        </head>
+        <body>
+          <h1>${form.title} - Responses</h1>
+          <p>Total responses: ${responseData.responseCount}</p>
+      `;
+      
+      responseData.responses.forEach((response, idx) => {
+        htmlContent += `<div class="response"><h3>Response ${idx + 1}</h3>`;
+        Object.entries(response.enhancedAnswers || {}).forEach(([questionId, answerData]: [string, any]) => {
+          htmlContent += `
+            <div>
+              <p class="question">${answerData.questionText || "Unnamed Question"}</p>
+              <p class="answer">${answerData.textAnswers?.answers?.[0]?.value || "No answer"}</p>
+            </div>
+          `;
+        });
+        htmlContent += `</div>`;
+      });
+      
+      htmlContent += `
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      
+      // Wait for content to load then print
+      printWindow.onload = function() {
+        printWindow.print();
+        // Some browsers may close the window after print, some may not
+      };
+      
+      toast({
+        title: "PDF prepared",
+        description: "The print dialog should open to save as PDF",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF",
+        variant: "destructive",
+      });
+    }
+  };
+
   
   const handleViewResponses = async () => {
     setIsLoading(true)
@@ -152,8 +277,34 @@ export function FormCard({ form, index }: FormCardProps) {
                 )}
                 
                 <DialogFooter>
-                  <Button onClick={() => setIsResponsesDialogOpen(false)}>Close</Button>
-                </DialogFooter>
+                <div className="flex flex-wrap gap-2 justify-end w-full">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={downloadAsExcel}
+                    disabled={!responseData || responseData.responses.length === 0}
+                    className="flex items-center gap-1"
+                  >
+                    <FileSpreadsheet size={16} />
+                    <span>Export Excel</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={downloadAsPDF}
+                    disabled={!responseData || responseData.responses.length === 0}
+                    className="flex items-center gap-1"
+                  >
+                    <FileType size={16} />
+                    <span>Export PDF</span>
+                  </Button>
+                  
+                  <Button onClick={() => setIsResponsesDialogOpen(false)}>
+                    Close
+                  </Button>
+                </div>
+              </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
