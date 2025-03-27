@@ -67,7 +67,7 @@ export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) =>
         initial={{ x: -50 }}
         animate={{ x: 0 }}
         transition={{ type: "spring", stiffness: 100 }}
-        className="w-full md:w-1/3 p-4 border-b md:border-r"
+        className="w-full md:w-1/3 p-4 border-b md:border-r flex flex-col"
       >
         <h2 className="text-xl md:text-2xl font-bold mb-4">Form Links</h2>
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -106,6 +106,45 @@ export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) =>
             )}
           </AnimatePresence>
         </DropdownMenu>
+
+        {/* Delete Button for Desktop - Hidden on mobile */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="hidden md:block mt-4"
+        >
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="w-full"
+                disabled={isDeleting}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Form
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your form and remove all associated data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleDeleteForm}
+                  disabled={isDeleting}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Form'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </motion.div>
       </motion.div>
 
       {/* Right Section - Form Preview */}
@@ -113,11 +152,11 @@ export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) =>
         initial={{ x: 50 }}
         animate={{ x: 0 }}
         transition={{ type: "spring", stiffness: 100 }}
-        className="w-full md:w-2/3 p-4"
+        className="w-full md:w-2/3 p-4 flex flex-col"
       >
         <h2 className="text-xl md:text-2xl font-bold mb-4">Form Preview</h2>
         <motion.div 
-          className="w-full h-[60vh] md:h-[calc(100vh-6rem)] border rounded-lg overflow-hidden"
+          className="w-full h-[60vh] md:h-[calc(100vh-6rem)] border rounded-lg overflow-hidden flex-grow"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
@@ -128,45 +167,45 @@ export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) =>
             title="Form Preview"
           />
         </motion.div>
-      </motion.div>
 
-      {/* Delete Button with Confirmation */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="w-full p-4"
-      >
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="destructive"
-              className="w-full"
-              disabled={isDeleting}
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete Form
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your form and remove all associated data.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={handleDeleteForm}
+        {/* Delete Button for Mobile - Shown only on mobile */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="md:hidden mt-4"
+        >
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="w-full"
                 disabled={isDeleting}
-                className="bg-red-600 hover:bg-red-700"
               >
-                {isDeleting ? 'Deleting...' : 'Delete Form'}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Form
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your form and remove all associated data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleDeleteForm}
+                  disabled={isDeleting}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Form'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </motion.div>
       </motion.div>
     </motion.div>
   )

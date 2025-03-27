@@ -38,14 +38,14 @@ const Footer = () => {
   return (
     <footer ref={ref} className="w-full border-t bg-background">
       <motion.div
-        className="container py-8 md:py-12"
+        className="container max-w-7xl mx-auto px-4 py-8 md:py-12"
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
       >
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 justify-center items-start">
           {/* About Section */}
-          <motion.div variants={itemVariants} className="space-y-3">
+          <motion.div variants={itemVariants} className="space-y-3 text-center md:text-left">
             <h3 className="text-lg font-semibold">FormCraft AI</h3>
             <p className="text-sm text-muted-foreground">
               AI-Powered Google Form Generator to help you build forms faster and more efficiently.
@@ -53,7 +53,7 @@ const Footer = () => {
           </motion.div>
 
           {/* Quick Links */}
-          <motion.div variants={itemVariants} className="space-y-3">
+          <motion.div variants={itemVariants} className="space-y-3 text-center md:text-left">
             <h3 className="text-lg font-semibold">Quick Links</h3>
             <div className="flex flex-col space-y-2">
               <Link href="/features" className="text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -69,7 +69,7 @@ const Footer = () => {
           </motion.div>
 
           {/* Legal */}
-          <motion.div variants={itemVariants} className="space-y-3">
+          <motion.div variants={itemVariants} className="space-y-3 text-center md:text-left">
             <h3 className="text-lg font-semibold">Legal</h3>
             <div className="flex flex-col space-y-2">
               <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -82,9 +82,9 @@ const Footer = () => {
           </motion.div>
 
           {/* Social Links */}
-          <motion.div variants={itemVariants} className="space-y-3">
+          <motion.div variants={itemVariants} className="space-y-3 text-center md:text-left">
             <h3 className="text-lg font-semibold">Connect</h3>
-            <div className="flex space-x-4">
+            <div className="flex justify-center md:justify-start space-x-4">
               <Link 
                 href="https://github.com/Avik-creator/aiformbuilder"
                 target="_blank"
@@ -95,12 +95,16 @@ const Footer = () => {
               </Link>
               <Link 
                 href="https://www.linkedin.com/in/avik-mukherjee-8ab9911bb/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Twitter className="h-5 w-5" />
               </Link>
               <Link 
                 href="https://x.com/avikm744"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Linkedin className="h-5 w-5" />
@@ -112,15 +116,17 @@ const Footer = () => {
         {/* Bottom Bar */}
         <motion.div 
           variants={itemVariants}
-          className="flex flex-col md:flex-row items-center justify-between pt-8 mt-8 border-t"
+          className="flex flex-col md:flex-row items-center justify-center md:justify-between pt-8 mt-8 border-t text-center md:text-left"
         >
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-muted-foreground mb-4 md:mb-0">
             © {new Date().getFullYear()} FormCraft AI. All rights reserved.
           </div>
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground mt-4 md:mt-0">
-            <span>Built with</span>
-            <span className="text-primary">♥</span>
-            <span>by</span>
+          <div className="flex flex-col md:flex-row items-center justify-center space-x-2 text-sm text-muted-foreground">
+            <div className="flex items-center space-x-2">
+              <span>Built with</span>
+              <span className="text-primary">♥</span>
+              <span>by</span>
+            </div>
             <Link 
               href="https://github.com/Avik-creator"
               target="_blank"
@@ -137,4 +143,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
