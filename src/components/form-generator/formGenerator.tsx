@@ -70,7 +70,7 @@ const HoveringWand = () => (
 export default function FormGenerator() {
   const [prompt, setPrompt] = useState(""); // User's prompt input
   const [isGenerating, setIsGenerating] = useState(false); // Loading state
-  const [formLinks, setFormLinks] = useState<{ editLink: string; viewLink: string } | null>(null); // Links to generated forms
+  const [formLinks, setFormLinks] = useState<{ editLink: string; viewLink: string, formId: string } | null>(null); // Links to generated forms
   const { toast } = useToast()
 
   // Handle suggestion click
@@ -105,6 +105,7 @@ export default function FormGenerator() {
       setFormLinks({
         editLink: `https://docs.google.com/forms/d/${createdForm.Form.formId}/edit`,
         viewLink: updatedForm.form.responderUri,
+        formId: createdForm.Form.formId
       });
 
       toast({
@@ -130,6 +131,7 @@ export default function FormGenerator() {
       setIsGenerating(false);
     }
   };
+  
 
   return (
     <>
@@ -143,7 +145,7 @@ export default function FormGenerator() {
         {isGenerating && <HoveringWand />}
       </AnimatePresence>
       {formLinks ? (
-        <FormPreview editLink={formLinks.editLink} viewLink={formLinks.viewLink} />
+        <FormPreview editLink={formLinks.editLink} viewLink={formLinks.viewLink} formId={formLinks.formId}/>
       ) : (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

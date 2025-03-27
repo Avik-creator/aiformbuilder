@@ -6,15 +6,18 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Copy, Check, ChevronDown } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-
+import { deleteForm } from '@/app/actions/actions'
+import { useRouter } from 'next/navigation'
 interface FormPreviewProps {
   editLink: string
   viewLink: string
+  formId: string
 }
 
-export const FormPreview = ({ editLink, viewLink }: FormPreviewProps) => {
+export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) => {
   const [copiedLink, setCopiedLink] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter();
   const { toast } = useToast()
 
   const copyToClipboard = async (text: string, type: 'edit' | 'view') => {
@@ -27,6 +30,18 @@ export const FormPreview = ({ editLink, viewLink }: FormPreviewProps) => {
       toast({ title: 'Error', description: 'Failed to copy link' })
     }
   }
+
+  const handleDeleteForm = async () => {
+    try {
+      await deleteForm(formId)
+      location.reload();
+      
+    } catch {
+      toast({title: 'Error', description: 'Failed to delete form', variant:'destructive' })
+    }
+  }
+
+  
 
   return (
     <motion.div 
@@ -102,6 +117,25 @@ export const FormPreview = ({ editLink, viewLink }: FormPreviewProps) => {
             title="Form Preview"
           />
         </motion.div>
+      </motion.div>
+
+      {/* Delete Button */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        className="w-full p-4"
+      >
+
+
+
+        <Button
+          variant="default"
+          onClick={handleDeleteForm}
+          className="w-full"
+        >
+          Delete Form
+        </Button>
       </motion.div>
     </motion.div>
   )
