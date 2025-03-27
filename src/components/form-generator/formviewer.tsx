@@ -4,10 +4,12 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Copy, Check, ChevronDown } from 'lucide-react'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Copy, Check, ChevronDown, Trash2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { deleteForm } from '@/app/actions/actions'
 import { useRouter } from 'next/navigation'
+
 interface FormPreviewProps {
   editLink: string
   viewLink: string
@@ -17,6 +19,7 @@ interface FormPreviewProps {
 export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) => {
   const [copiedLink, setCopiedLink] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter();
   const { toast } = useToast()
 
@@ -32,16 +35,25 @@ export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) =>
   }
 
   const handleDeleteForm = async () => {
+    setIsDeleting(true)
     try {
       await deleteForm(formId)
-      location.reload();
-      
-    } catch {
-      toast({title: 'Error', description: 'Failed to delete form', variant:'destructive' })
+      toast({ 
+        title: 'Form Deleted', 
+        description: 'Your form has been successfully deleted',
+        variant: 'default'
+      })
+      router.push('/forms')
+    } catch (error) {
+      toast({ 
+        title: 'Error', 
+        description: 'Failed to delete form', 
+        variant: 'destructive' 
+      })
+    } finally {
+      setIsDeleting(false)
     }
   }
-
-  
 
   return (
     <motion.div 
@@ -94,7 +106,6 @@ export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) =>
             )}
           </AnimatePresence>
         </DropdownMenu>
-       
       </motion.div>
 
       {/* Right Section - Form Preview */}
@@ -119,23 +130,43 @@ export const FormPreview = ({ editLink, viewLink, formId }: FormPreviewProps) =>
         </motion.div>
       </motion.div>
 
-      {/* Delete Button */}
+      {/* Delete Button with Confirmation */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
         className="w-full p-4"
       >
-
-
-
-        <Button
-          variant="default"
-          onClick={handleDeleteForm}
-          className="w-full"
-        >
-          Delete Form
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="destructive"
+              className="w-full"
+              disabled={isDeleting}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Form
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your form and remove all associated data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleDeleteForm}
+                disabled={isDeleting}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Form'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </motion.div>
     </motion.div>
   )

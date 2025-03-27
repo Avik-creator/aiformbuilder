@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     // Use Groq API for content generation
     const result = await client.chat.completions.create({
       messages: [{ role: "user", content: finalPrompt }],
-      model: "llama3-70b-8192",
+      model: "deepseek-r1-distill-llama-70b",
       response_format:{
         type: "json_object"
       },

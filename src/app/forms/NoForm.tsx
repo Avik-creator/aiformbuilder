@@ -36,7 +36,7 @@ export function NoForms() {
         transition={{ delay: 0.6, duration: 0.3 }}
       >
         <Button
-          onClick={() => redirect('/')}
+          onClick={() => redirect('/form-generation')}
           className="bg-primary text-primary-foreground hover:bg-primary/90"
         >
           Create Your First Form
