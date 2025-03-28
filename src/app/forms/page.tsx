@@ -49,9 +49,9 @@ export default async function FormsPage() {
 
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 min-h-screen justify-center items-center">
-          <div className="fixed inset-0 pointer-events-none z-[-1]">
-      <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
-      <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
+         <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+      <div className="absolute -left-[20%] top-[5%] h-[600px] w-[600px] rounded-full bg-purple-900/30 blur-[150px] animate-pulse" />
+      <div className="absolute right-[0%] bottom-[0%] h-[500px] w-[500px] rounded-full bg-indigo-900/30 blur-[150px] animate-pulse" />
     </div>
 
       <h1 className="text-3xl font-bold mb-6">Your Forms</h1>

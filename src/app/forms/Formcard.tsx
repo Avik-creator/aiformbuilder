@@ -14,11 +14,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { deleteForm, getFormResponses } from "../actions/actions" // Import your server actions
+import { deleteForm, getFormResponses } from "../actions/actions"
 import { useRouter } from "next/navigation"
-import { toast } from "@/hooks/use-toast" // Import toast component if available
-
-
+import { toast } from "@/hooks/use-toast"
 
 interface FormCardProps {
   form: {
@@ -28,7 +26,7 @@ interface FormCardProps {
     formLink: string
     editFormLink?: string | null
   }
-  index: number // Add index prop for staggered animation
+  index: number
 }
 
 export function FormCard({ form, index }: FormCardProps) {
@@ -49,7 +47,7 @@ export function FormCard({ form, index }: FormCardProps) {
       transition: {
         duration: 0.4,
         ease: [0.25, 0.25, 0, 1],
-        delay: index * 0.15, // Stagger based on index
+        delay: index * 0.15,
       }
     }
   }
@@ -62,7 +60,7 @@ export function FormCard({ form, index }: FormCardProps) {
         title: "Form deleted",
         description: "The form has been successfully deleted",
       })
-      router.refresh() // Refresh the page to update the list
+      router.refresh()
     } catch (error) {
       toast({
         title: "Error",
@@ -79,21 +77,17 @@ export function FormCard({ form, index }: FormCardProps) {
     if (!responseData) return;
     
     try {
-      // Create CSV content
       let csvContent = "data:text/csv;charset=utf-8,";
       
-      // Add headers based on first response if available
       if (responseData.responses.length > 0) {
         const firstResponse = responseData.responses[0];
         const headers = Object.values(firstResponse.enhancedAnswers || {})
           .map((answer: any) => answer.questionText || "Unnamed Question");
         csvContent += headers.join(",") + "\n";
         
-        // Add rows
         responseData.responses.forEach(response => {
           const row = Object.values(response.enhancedAnswers || {})
             .map((answer: any) => {
-              // Sanitize the value for CSV (wrap in quotes and escape any quotes inside)
               const value = answer.textAnswers?.answers?.[0]?.value || "";
               return `"${value.replace(/"/g, '""')}"`;
             });
@@ -101,7 +95,6 @@ export function FormCard({ form, index }: FormCardProps) {
         });
       }
       
-      // Create download link
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri);
@@ -123,12 +116,10 @@ export function FormCard({ form, index }: FormCardProps) {
     }
   };
 
-
-const downloadAsPDF = () => {
+  const downloadAsPDF = () => {
     if (!responseData) return;
     
     try {
-      // Create a new window for printing
       const printWindow = window.open('', '_blank');
       if (!printWindow) {
         toast({
@@ -139,17 +130,31 @@ const downloadAsPDF = () => {
         return;
       }
       
-      // Build HTML content
       let htmlContent = `
         <html>
         <head>
           <title>${form.title} - Responses</title>
           <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h1 { color: #333; }
-            .response { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+            body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+            h1 { color: #333; margin-bottom: 20px; }
+            .response { 
+              background-color: white; 
+              border: 1px solid #e0e0e0; 
+              padding: 15px; 
+              margin-bottom: 15px; 
+              border-radius: 8px; 
+              box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            .response-header { 
+              display: flex; 
+              justify-content: space-between; 
+              align-items: center; 
+              margin-bottom: 10px; 
+              border-bottom: 1px solid #f0f0f0; 
+              padding-bottom: 10px;
+            }
             .question { color: #555; margin-bottom: 5px; font-weight: bold; }
-            .answer { margin-bottom: 15px; }
+            .answer { margin-bottom: 15px; color: #333; }
           </style>
         </head>
         <body>
@@ -158,7 +163,13 @@ const downloadAsPDF = () => {
       `;
       
       responseData.responses.forEach((response, idx) => {
-        htmlContent += `<div class="response"><h3>Response ${idx + 1}</h3>`;
+        htmlContent += `
+          <div class="response">
+            <div class="response-header">
+              <h3>Response ${idx + 1}</h3>
+            </div>
+        `;
+        
         Object.entries(response.enhancedAnswers || {}).forEach(([questionId, answerData]: [string, any]) => {
           htmlContent += `
             <div>
@@ -167,6 +178,7 @@ const downloadAsPDF = () => {
             </div>
           `;
         });
+        
         htmlContent += `</div>`;
       });
       
@@ -178,10 +190,8 @@ const downloadAsPDF = () => {
       printWindow.document.write(htmlContent);
       printWindow.document.close();
       
-      // Wait for content to load then print
       printWindow.onload = function() {
         printWindow.print();
-        // Some browsers may close the window after print, some may not
       };
       
       toast({
@@ -197,12 +207,12 @@ const downloadAsPDF = () => {
     }
   };
 
-  
   const handleViewResponses = async () => {
     setIsLoading(true)
     try {
       const data = await getFormResponses(form.id)
       setResponseData(data)
+      setIsResponsesDialogOpen(true)
     } catch (error) {
       toast({
         title: "Error",
@@ -214,7 +224,6 @@ const downloadAsPDF = () => {
     }
   }
 
-  
   return (
     <motion.div
       variants={variants}
@@ -224,10 +233,10 @@ const downloadAsPDF = () => {
       whileTap={{ scale: 0.98 }}
       className="w-full"
     >
-      <Card className="h-full flex flex-col">
+      <Card className="h-full flex flex-col bg-black border-purple-900/50">
         <CardHeader>
-          <CardTitle className="line-clamp-1">{form.title}</CardTitle>
-          <CardDescription className="line-clamp-2">{form.description}</CardDescription>
+          <CardTitle className="line-clamp-1 text-purple-300">{form.title}</CardTitle>
+          <CardDescription className="line-clamp-2 text-purple-100/70">{form.description}</CardDescription>
         </CardHeader>
         <CardContent className="flex-grow">
           <div className="flex items-center justify-between">
@@ -236,17 +245,17 @@ const downloadAsPDF = () => {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="flex items-center gap-1 text-sm"
+                  className="flex items-center gap-1 text-sm text-purple-300 hover:bg-purple-900/30"
                   onClick={handleViewResponses}
                 >
                   <Eye size={16} />
                   <span>View Responses</span>
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
+              <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto bg-black border-purple-900/50">
                 <DialogHeader>
-                  <DialogTitle>Responses for {form.title}</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="text-purple-300">Responses for {form.title}</DialogTitle>
+                  <DialogDescription className="text-purple-100/70">
                     {isLoading ? "Loading responses..." : 
                       responseData ? 
                       `Total responses: ${responseData.responseCount}` : 
@@ -254,36 +263,14 @@ const downloadAsPDF = () => {
                   </DialogDescription>
                 </DialogHeader>
                 
-                {responseData && responseData.responses.length > 0 ? (
-                  <div className="space-y-4 mt-4">
-                    {responseData.responses.map((response, idx) => (
-                      <div key={idx} className="border rounded-md p-3">
-                        <h4 className="font-medium mb-2">Response {idx + 1}</h4>
-                        {Object.entries(response.enhancedAnswers || {}).map(([questionId, answerData]: [string, any]) => (
-                          <div key={questionId} className="mb-2">
-                            <p className="text-sm text-gray-500">Question:</p>
-                            <p className="text-sm">{answerData.questionText || "Unnamed Question"}</p>
-                            <p className="text-sm text-gray-500 mt-1">Answer:</p>
-                            <p className="text-sm">{answerData.textAnswers?.answers?.[0]?.value || "No answer"}</p>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                ) : !isLoading && (
-                  <div className="flex justify-center items-center py-8">
-                    <p className="text-muted-foreground">No responses yet</p>
-                  </div>
-                )}
-                
-                <DialogFooter>
-                <div className="flex flex-wrap gap-2 justify-end w-full">
+                {/* Export buttons at the top */}
+                <div className="flex justify-end gap-2 mb-4">
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={downloadAsExcel}
                     disabled={!responseData || responseData.responses.length === 0}
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 text-purple-300 hover:bg-purple-900/30 border-purple-900/50"
                   >
                     <FileSpreadsheet size={16} />
                     <span>Export Excel</span>
@@ -294,29 +281,71 @@ const downloadAsPDF = () => {
                     size="sm"
                     onClick={downloadAsPDF}
                     disabled={!responseData || responseData.responses.length === 0}
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 text-purple-300 hover:bg-purple-900/30 border-purple-900/50"
                   >
                     <FileType size={16} />
                     <span>Export PDF</span>
                   </Button>
-                  
-                  <Button onClick={() => setIsResponsesDialogOpen(false)}>
+                </div>
+                
+                {responseData && responseData.responses.length > 0 ? (
+                  <div className="space-y-4">
+                    {responseData.responses.map((response, idx) => (
+                      <div 
+                        key={idx} 
+                        className="border rounded-md p-4 bg-black border-purple-900/50"
+                      >
+                        <div className="flex justify-between items-center mb-3">
+                          <h4 className="font-medium text-purple-300">Response {idx + 1}</h4>
+                        </div>
+                        {Object.entries(response.enhancedAnswers || {}).map(([questionId, answerData]: [string, any]) => (
+                          <div key={questionId} className="mb-3 pb-3 border-b border-purple-900/50 last:border-b-0">
+                            <p className="text-sm text-purple-100/50 mb-1">Question:</p>
+                            <p className="text-sm text-purple-200">{answerData.questionText || "Unnamed Question"}</p>
+                            <p className="text-sm text-purple-100/50 mt-2 mb-1">Answer:</p>
+                            <p className="text-sm text-purple-100">{answerData.textAnswers?.answers?.[0]?.value || "No answer"}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                ) : !isLoading && (
+                  <div className="flex justify-center items-center py-8">
+                    <p className="text-purple-100/50">No responses yet</p>
+                  </div>
+                )}
+                
+                <DialogFooter className="mt-4">
+                  <Button 
+                    onClick={() => setIsResponsesDialogOpen(false)} 
+                    variant="outline"
+                    className="text-purple-300 hover:bg-purple-900/30 border-purple-900/50"
+                  >
                     Close
                   </Button>
-                </div>
-              </DialogFooter>
+                </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
           <div className="flex gap-2">
-            <Button asChild size="sm">
+            <Button 
+              asChild 
+              size="sm" 
+              variant="outline" 
+              className="text-purple-300 hover:bg-purple-900/30 border-purple-900/50"
+            >
               <Link href={form.formLink} target="_blank" rel="noopener noreferrer">
                 <ExternalLink size={16} className="mr-1" /> View
               </Link>
             </Button>
-            <Button asChild variant="outline" size="sm">
+            <Button 
+              asChild 
+              variant="outline" 
+              size="sm" 
+              className="text-purple-300 hover:bg-purple-900/30 border-purple-900/50"
+            >
               <Link
                 href={form?.editFormLink || ''}
                 target="_blank"
@@ -330,22 +359,32 @@ const downloadAsPDF = () => {
           
           <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="destructive" size="sm">
+              <Button variant="destructive" size="sm" className="bg-purple-900/50 hover:bg-purple-900/70">
                 <Trash2 size={16} />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-black border-purple-900/50">
               <DialogHeader>
-                <DialogTitle>Delete Form</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-purple-300">Delete Form</DialogTitle>
+                <DialogDescription className="text-purple-100/70">
                   Are you sure you want to delete "{form.title}"? This will remove the form from Google Forms and our database. This action cannot be undone.
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter className="mt-4">
-                <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)} disabled={isLoading}>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsDeleteDialogOpen(false)} 
+                  disabled={isLoading}
+                  className="text-purple-300 hover:bg-purple-900/30 border-purple-900/50"
+                >
                   Cancel
                 </Button>
-                <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
+                <Button 
+                  variant="destructive" 
+                  onClick={handleDelete} 
+                  disabled={isLoading}
+                  className="bg-purple-900/50 hover:bg-purple-900/70"
+                >
                   {isLoading ? "Deleting..." : "Delete Form"}
                 </Button>
               </DialogFooter>
@@ -357,7 +396,6 @@ const downloadAsPDF = () => {
   )
 }
 
-// Example of how to use the FormCard in a grid layout
 export function FormCardGrid({ forms }: { forms: FormCardProps['form'][] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -367,4 +405,3 @@ export function FormCardGrid({ forms }: { forms: FormCardProps['form'][] }) {
     </div>
   )
 }
-

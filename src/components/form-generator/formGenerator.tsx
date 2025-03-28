@@ -141,9 +141,9 @@ export default function FormGenerator() {
           color: #ffffff;
         }
       `}</style>
-          <div className="fixed inset-0 pointer-events-none z-[-1]">
-      <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
-      <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
+         <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+      <div className="absolute -left-[20%] top-[5%] h-[600px] w-[600px] rounded-full bg-purple-900/30 blur-[150px] animate-pulse" />
+      <div className="absolute right-[0%] bottom-[0%] h-[500px] w-[500px] rounded-full bg-indigo-900/30 blur-[150px] animate-pulse" />
     </div>
 
       <AnimatePresence>
