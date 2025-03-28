@@ -3,7 +3,7 @@ import { motion } from "framer-motion"
 
 export default function Demo() {
   return (
-    <section className="bg-gray-900 py-24 sm:py-32 relative overflow-hidden">
+    <section className="bg-transparent py-24 sm:py-32 relative overflow-hidden">
       {/* Purple gradient accent */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-purple-900/20 blur-[120px]" />
       <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
