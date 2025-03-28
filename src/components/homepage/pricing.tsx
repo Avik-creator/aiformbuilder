@@ -48,7 +48,7 @@ export default function Pricing() {
           className="mx-auto mt-16 max-w-2xl rounded-2xl bg-gray-800 shadow-lg ring-1 ring-gray-700 p-8"
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-semibold text-white">FormGenius Free Tier</h3>
+            <h3 className="text-2xl font-semibold text-white">FormCraft AI Free Tier</h3>
             <span className="text-4xl font-bold text-purple-400">$0</span>
           </div>
           
