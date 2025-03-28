@@ -75,7 +75,7 @@ export async function POST(req: Request) {
       response_format:{
         type: "json_object"
       },
-      temperature: 0,
+      temperature: 0.7,
       
     });
 

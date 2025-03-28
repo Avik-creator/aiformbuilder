@@ -194,7 +194,9 @@ You are a Google Forms generator. Convert the following text into a Google Form 
   4. ✓ All enum values match their defined types exactly
   5. ✓ No extra fields are added to any interface
   6. ✓ Option objects follow the strict schema
+
   7. ✓ No option.value or option.image when isOther is true
+  8. ✓ ScaleQuestion low value must be 0 or 1.
   
   USER_PROMPT: ${userPrompt}
   `;
