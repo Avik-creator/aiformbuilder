@@ -5,12 +5,12 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 
 export default function SignIn() {
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4 py-12">
-      <div className="fixed inset-0 pointer-events-none z-[-1]">
-      <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
-      <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
+    <div className="relative min-h-screen bg-gray-950 flex items-center justify-center px-4 py-12 overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+      <div className="absolute -left-[20%] top-[5%] h-[600px] w-[600px] rounded-full bg-purple-900/30 blur-[150px] animate-pulse" />
+      <div className="absolute right-[0%] bottom-[0%] h-[500px] w-[500px] rounded-full bg-indigo-900/30 blur-[150px] animate-pulse" />
     </div>
-      <Card className="w-full max-w-md mx-auto shadow-lg bg-gray-800 border-gray-700">
+      <Card className="w-full max-w-md mx-auto border-none bg-transparent backdrop-blur-sm shadow-lg border-gray-800 rounded-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-white">Welcome back</CardTitle>
           <p className="text-gray-400">
