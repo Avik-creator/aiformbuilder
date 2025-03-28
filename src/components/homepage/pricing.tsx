@@ -37,7 +37,7 @@ export default function Pricing() {
             Completely Free, No Strings Attached
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-300">
-            Unlock the full potential of FormGenius at absolutely no cost. No limitations, no hidden fees.
+            Unlock the full potential of FormCraft AI at absolutely no cost. No limitations, no hidden fees.
           </p>
         </div>
         <motion.div
