@@ -1,50 +1,91 @@
-'use client'
+"use client"
 
-import { motion } from 'framer-motion'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Brain, Zap, Sparkles } from 'lucide-react'
-
-const features = [
-  {
-    title: 'AI-Powered Form Creation',
-    description: 'Let AI generate the perfect form structure based on your needs.',
-    icon: Brain,
-  },
-  {
-    title: 'Smart Response Analysis',
-    description: 'Automatically analyze and categorize responses with machine learning.',
-    icon: Zap,
-  },
-  {
-    title: "Effective Form Management",
-    description: 'Manage and track form responses with ease.',
-    icon: Sparkles,
-  },
-]
+import { motion } from "framer-motion"
+import { 
+  FileText, 
+  Download, 
+  Trash2, 
+  FileCheck2, 
+  FilePlus2 
+} from "lucide-react"
 
 export default function Features() {
   return (
-    <section className="py-20 px-4 md:px-6 lg:px-8">
-      <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Powerful AI Features</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {features.map((feature, index) => (
-          <motion.div
-            key={feature.title}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-          >
-            <Card>
-              <CardHeader>
-                <feature.icon className="h-10 w-10 mb-4 text-primary" />
-                <CardTitle>{feature.title}</CardTitle>
-                <CardDescription>{feature.description}</CardDescription>
-              </CardHeader>
-            </Card>
-          </motion.div>
-        ))}
+    <div className="bg-gray-950 py-24 sm:py-32" id="features">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl lg:text-center">
+          <h2 className="text-base font-semibold leading-7 text-purple-400">Powerful AI Form Builder</h2>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Create, Manage, and Export Forms Effortlessly
+          </p>
+          <p className="mt-6 text-lg leading-8 text-gray-300">
+            FormCraftAI empowers you to create, manipulate, and export forms with cutting-edge AI technology.
+          </p>
+        </div>
+        <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+          <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="flex flex-col"
+            >
+              <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-white">
+                <div className="h-5 w-5 flex-none text-purple-400">
+                  <FilePlus2 />
+                </div>
+                AI-Powered Form Creation
+              </dt>
+              <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-400">
+                <p className="flex-auto">
+                  Leverage advanced AI to generate sophisticated forms instantly. Describe your needs, and watch as the perfect form takes shape.
+                </p>
+              </dd>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="flex flex-col"
+            >
+              <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-white">
+                <div className="h-5 w-5 flex-none text-purple-400">
+                  <Trash2 />
+                </div>
+                Easy Form Management
+              </dt>
+              <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-400">
+                <p className="flex-auto">
+                  Seamlessly delete, modify, and organize your forms with intuitive controls and smart management tools.
+                </p>
+              </dd>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="flex flex-col"
+            >
+              <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-white">
+                <div className="h-5 w-5 flex-none text-purple-400">
+                  <Download />
+                </div>
+                Versatile Export Options
+              </dt>
+              <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-400">
+                <p className="flex-auto">
+                  Export your forms and their responses with a single click. Support for CSV and PDF formats ensures maximum flexibility.
+                </p>
+              </dd>
+            </motion.div>
+          </dl>
+        </div>
       </div>
-    </section>
+    </div>
   )
 }
-

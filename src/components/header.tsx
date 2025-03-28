@@ -102,7 +102,11 @@ const Header = () => {
                 <div className="flex gap-4">
 
                   <Link href="/signin">
-                    <Button variant="default" className="text-md gap-4">
+                    <Button variant="default" className="relative text-base rounded-md 
+                 bg-gray-800 border-gray-700 text-white 
+                 hover:bg-gray-700 
+                 focus:outline-none 
+                 animate-pulse-glow">
                       Sign in
                     </Button>
                   </Link>

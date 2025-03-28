@@ -1,8 +1,12 @@
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+
 import CTA from "@/components/homepage/cta";
+import Demo from "@/components/homepage/demo";
 import Features from "@/components/homepage/features";
 import Hero from "@/components/homepage/hero";
+import Pricing from "@/components/homepage/pricing";
+import { Testimonials } from "@/components/homepage/testimonial";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -36,10 +40,13 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-
     <Hero />
       <Features />
+      <Demo/>
+      <Testimonials/>
       <CTA />
+
+      <Pricing/>
 
       </>
   );

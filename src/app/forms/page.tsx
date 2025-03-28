@@ -49,6 +49,10 @@ export default async function FormsPage() {
 
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 min-h-screen justify-center items-center">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
+        <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
+      </div>
       <h1 className="text-3xl font-bold mb-6">Your Forms</h1>
       {forms.length === 0 ? (
         <NoForms />

@@ -3,16 +3,18 @@ import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 
-
 export default function SignIn() {
-    
   return (
-
-      <Card className="w-full max-w-md mx-auto shadow-lg">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center font-bold">Welcome back</CardTitle>
-          <p className="text-center text-muted-foreground">
-            Sign in to access your account
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4 py-12">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
+        <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
+      </div>
+      <Card className="w-full max-w-md mx-auto shadow-lg bg-gray-800 border-gray-700">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-2xl font-bold text-white">Welcome back</CardTitle>
+          <p className="text-gray-400">
+            Sign in to access your FormCraft AI account
           </p>
         </CardHeader>
         <CardContent className="grid gap-4">
@@ -25,7 +27,11 @@ export default function SignIn() {
             <Button 
               type="submit"
               variant="outline"
-              className="w-full flex items-center justify-center gap-2"
+              className="w-full flex items-center justify-center gap-2 
+                         bg-gray-700 text-white 
+                         hover:bg-gray-600 
+                         border-gray-600 
+                         focus:ring-2 focus:ring-purple-500"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -45,11 +51,11 @@ export default function SignIn() {
                   fill="#EA4335"
                 />
               </svg>
-              Sign in with Google
+              <span className="text-white">Sign in with Google</span>
             </Button>
           </form>
         </CardContent>
       </Card>
-
+    </div>
   );
 }
