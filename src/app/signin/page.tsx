@@ -6,10 +6,10 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 export default function SignIn() {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4 py-12">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
-        <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
-      </div>
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+      <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
+      <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
+    </div>
       <Card className="w-full max-w-md mx-auto shadow-lg bg-gray-800 border-gray-700">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-white">Welcome back</CardTitle>

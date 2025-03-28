@@ -141,10 +141,11 @@ export default function FormGenerator() {
           color: #ffffff;
         }
       `}</style>
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
-        <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
-      </div>
+          <div className="fixed inset-0 pointer-events-none z-[-1]">
+      <div className="absolute -left-[10%] top-[10%] h-[500px] w-[500px] rounded-full bg-purple-900/20 blur-[100px]" />
+      <div className="absolute right-[5%] bottom-[5%] h-[400px] w-[600px] rounded-full bg-purple-900/20 blur-[100px]" />
+    </div>
+
       <AnimatePresence>
         {isGenerating && <HoveringWand />}
       </AnimatePresence>

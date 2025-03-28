@@ -1,6 +1,3 @@
-import Footer from "@/components/footer";
-import Header from "@/components/header";
-
 import CTA from "@/components/homepage/cta";
 import Demo from "@/components/homepage/demo";
 import Features from "@/components/homepage/features";
