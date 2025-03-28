@@ -93,7 +93,9 @@ const Header = () => {
                   <Link href="/form-generation">
                     <Button variant="outline" className={`flex items-center gap-2 p-2 rounded-lg transition-all ${pathname === '/form-generation' 
                     ? 'bg-primary/20 text-primary' 
-                    : 'hover:bg-white/5 text-gray-300'}`}>
+                    : 'hover:bg-white/5 text-gray-300'}`}
+                    
+                    >
                       <span className="hidden md:inline">Create Form</span> <Plus className="md:hidden" />
                     </Button>
                   </Link>
