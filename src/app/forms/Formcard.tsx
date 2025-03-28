@@ -223,7 +223,6 @@ export function FormCard({ form, index }: FormCardProps) {
       setIsLoading(false)
     }
   }
-
   return (
     <motion.div
       variants={variants}
