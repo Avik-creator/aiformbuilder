@@ -22,12 +22,6 @@ const testimonials = [
     author: "Jessica Williams",
     role: "Data Analyst",
     company: "DataDriven Inc.",
-  },
-  {
-    content: "This is one of the Good Projects I have ever seen. The AI is so smart and the forms are so easy to use.",
-    author: "John Doe",
-    role: "Software Engineer",
-    company: "Tech Innovations",
   }
 ]
 
