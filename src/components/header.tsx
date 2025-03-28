@@ -83,8 +83,18 @@ const Header = () => {
                 <div className="flex items-center gap-8 md:gap-1 lg:gap-4">
 
                   <Link href="/forms">
-                    <Button variant="outline">
+                    <Button variant="outline"  className={`flex items-center gap-2 p-2 rounded-lg transition-all ${pathname === '/forms' 
+                    ? 'bg-primary/20 text-primary' 
+                    : 'hover:bg-white/5 text-gray-300'}`}>
                       <span className="hidden md:inline">Forms</span> <LayoutDashboard className="md:hidden" />
+                    </Button>
+                  </Link>
+
+                  <Link href="/form-generation">
+                    <Button variant="outline" className={`flex items-center gap-2 p-2 rounded-lg transition-all ${pathname === '/form-generation' 
+                    ? 'bg-primary/20 text-primary' 
+                    : 'hover:bg-white/5 text-gray-300'}`}>
+                      <span className="hidden md:inline">Create Form</span> <Plus className="md:hidden" />
                     </Button>
                   </Link>
                   {session.user.name && session.user.image && (
