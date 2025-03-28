@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 
 const testimonials = [
   {
-    content: "FormGenius has completely transformed how we collect data. What used to take days now takes minutes.",
+    content: "FormCraftAI has completely transformed how we collect data. What used to take days now takes minutes.",
     author: "Sarah Johnson",
     role: "Director of Marketing",
     company: "TechCorp",
