@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "FormCraft AI",
     countryName:"India",
+    images:"https://formcraftai-delta.vercel.app/og-image.png",
     url:"https://formcraftai-delta.vercel.app"
   },
   twitter:{
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
     creator: "Avik Mukherjee",
     site: "FormCraft AI",
     title: "FormCraft AI",
+    images:"https://formcraftai-delta.vercel.app/og-image.png",
     description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
   }
   
