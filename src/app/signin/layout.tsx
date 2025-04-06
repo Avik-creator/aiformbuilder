@@ -28,6 +28,11 @@ export const metadata: Metadata = {
     description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",   
     creatorId: "Avik Mukherjee",
     siteId: "FormCraft AI",
+  },
+  icons:{
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   }
 
 }

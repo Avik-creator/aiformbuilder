@@ -31,6 +31,11 @@ export const metadata: Metadata = {
      images:"https://formcraftai-delta.vercel.app/og-image.png",
     title: "FormCraft AI",
     description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",   
+  },
+  icons:{
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   }
 
 }

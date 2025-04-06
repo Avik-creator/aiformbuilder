@@ -26,6 +26,11 @@ export const metadata: Metadata = {
     site: "FormCraft AI",
     title: "Privacy Policy | FormCraft AI",
     description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",   
+  },
+  icons:{
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   }
 }
 
