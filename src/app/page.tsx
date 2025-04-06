@@ -7,7 +7,7 @@ import { Testimonials } from "@/components/homepage/testimonial";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AI Form Generator",
+  title: "FormCraft AI",
   verification: {
     google: process.env.GOOGLE_VERIFICATION_ID
   },
