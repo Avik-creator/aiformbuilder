@@ -6,8 +6,8 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: {
-    default: "AI Form Generator",
-    template: "%s | AI Form Generator",
+    default: "FormCraft AI",
+    template: "%s | FormCraft AI",
   },
   description: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
   abstract: "Want to create a form? FormCraft AI is here to help you generate forms with AI.",
