@@ -30,9 +30,9 @@ export const metadata: Metadata = {
     siteId: "FormCraft AI",
   },
   icons:{
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/icon.ico",
+    shortcut: "/icon.ico",
+    apple: "/logo.png",
   }
 
 }
